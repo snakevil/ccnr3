@@ -1,5 +1,7 @@
 Cjson = require'cjson'
 
+import store from require'utility.io'
+
 _table2xml = (data) ->
     tag = data['/']
     data['/'] = nil
@@ -27,5 +29,5 @@ _table2xml = (data) ->
             headers ..= '<?xml-stylesheet type="text/xsl" href="' .. data['?'] .. '"?>\n'
             data['?'] = nil
         @set_header 'Content-Type', 'application/xml; charset=utf-8'
-        ngx.say headers .. _table2xml data
+        ngx.say store headers .. _table2xml data
     next!
