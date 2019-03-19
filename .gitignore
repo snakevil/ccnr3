@@ -5,4 +5,5 @@
 !lib/
 !libexec/
 !var/
+!Makefile
 !README.md
