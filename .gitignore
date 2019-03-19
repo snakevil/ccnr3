@@ -1,0 +1,8 @@
+*
+!.gitignore
+
+!etc/
+!lib/
+!libexec/
+!var/
+!README.md
