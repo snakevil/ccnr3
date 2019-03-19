@@ -1,0 +1,36 @@
+types {
+    application/xml xml;
+}
+
+location /n/db/ {
+    internal;
+}
+
+location /n/ui/ {
+    internal;
+}
+
+location /n/ {
+    # /var/
+    error_page 404 = @ccnr3;
+    set $n_orig_uri $uri;
+    # fix trailing slash for novel directories
+    rewrite ^(/n)(/[^\.]+)$ $1/db$2;
+    if (-d $document_root$uri) {
+        rewrite ^(/n)/db(/.*[^/])$ $1$2/ permanent;
+    }
+    # /n/db/foo/1 -> /var/db/foo/1.xml
+    rewrite ^(/n/db/.+/.+)$ $1.xml break;
+    # /n/db/foo/ -> /var/db/foo/toc.xml
+    rewrite ^(/n/db/.+)/$ $1/toc.xml break;
+    # /n/foo -> /var/ui/foo
+    rewrite ^(/n)(/.*)$ $1/ui$2 break;
+}
+
+location @ccnr3 {
+    if ($uri !~ ^/n/db/) {
+        return 404;
+    }
+    lua_code_cache on;
+    content_by_lua_file $document_root/n/app/libexec/app.lua;
+}
