@@ -2,6 +2,10 @@ types {
     application/xml xml;
 }
 
+location /n/app/ {
+    internal;
+}
+
 location /n/db/ {
     internal;
 }
@@ -31,6 +35,6 @@ location @ccnr3 {
     if ($uri !~ ^/n/db/) {
         return 404;
     }
-    lua_code_cache on;
+    lua_code_cache off;
     content_by_lua_file $document_root/n/app/libexec/app.lua;
 }
