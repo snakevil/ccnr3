@@ -10,7 +10,7 @@ _table2xml = (data) ->
     open .. '>' .. content .. '</' .. tag .. '>'
 
 (req, resp, next) ->
-    resp\set_header 'X-Powered-By', 'CCNR/3'
+    resp\set_header 'Server', 'CCNR/3'
     resp.xml = (data) =>
         headers = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
         if 'table' == type data
@@ -18,10 +18,6 @@ _table2xml = (data) ->
                 data[''] = {}
             elseif 'table' != type data['']
                 data[''] = { data[''] }
-            table.insert data[''], {
-                '/': 'Storage',
-                '': ngx.var.document_root .. ngx.var.uri
-            }
         else
             data = {
                 '/': 'Error',
