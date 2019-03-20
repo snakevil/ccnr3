@@ -20,7 +20,7 @@ clean:
 
 dist: $(DESTDIR)/$(DIST)
 $(DESTDIR)/$(DIST): $(LUAs) $(RESs)
-	tar -cf - -C $(DESTDIR) --exclude '.*' app ui | xz -9 > $@
+	tar -cf - -C $(DESTDIR) --exclude '.*' app gui | xz -9 > $@
 
 lua: $(LUAs)
 $(LUAs): $(LUADIR)/%.lua: %.moon

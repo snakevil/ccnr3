@@ -4,6 +4,8 @@
 !etc/
 !lib/
 !libexec/
+!share/
 !var/
 !Makefile
+!package.json
 !README.md

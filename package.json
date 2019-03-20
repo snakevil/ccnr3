@@ -1,0 +1,17 @@
+{
+  "name": "ccnr3",
+  "version": "1.0.0",
+  "description": "CCNR3",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snakevil/ccnr3.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/snakevil/ccnr3/issues"
+  },
+  "homepage": "https://github.com/snakevil/ccnr3#readme"
+}
