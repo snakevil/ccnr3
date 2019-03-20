@@ -12,4 +12,4 @@ do
         }, ';'
         package.path = path\gsub(';%./%?%.lua;', extended)\sub 2, -2
 
-require'router'\dispatch!
+require'ccnr3.router'\dispatch!

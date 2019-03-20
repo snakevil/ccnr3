@@ -1,5 +1,3 @@
-
-
 (req, resp, next) ->
     resp\set_header 'Server', 'CCNR/3'
     req.ctx = {}

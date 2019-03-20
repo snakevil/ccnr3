@@ -4,7 +4,7 @@
     chapters = [i[1] for i in ngx.re.gmatch req.ctx.toc, '<Chapter ref="(.*?)"><!\\[CDATA\\[(.*?)\\]\\]></Chapter>']
     return resp\status 404 if #chapters < index
     driver = req.ctx.driver
-    driver = require'driver'.for req.ctx.url if not driver
+    driver = require'ccnr3.drv'.for req.ctx.url if not driver
     return resp\status 501 if not driver
     data = driver\chapter chapters[index], novel: req.params.novel
     return resp\status 504 if not data

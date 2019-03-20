@@ -12,7 +12,7 @@
             req.ctx.toc = \read '*a'
             \close!
     else
-        driver = require'driver'.for req.ctx.url
+        driver = require'ccnr3.drv'.for req.ctx.url
         return resp\status 501 if not driver
         req.ctx.driver = driver
         req.ctx.toc = driver\toc!

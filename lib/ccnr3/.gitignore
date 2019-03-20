@@ -1,0 +1,7 @@
+*
+!.gitignore
+
+!cmw/
+!con/
+!drv/
+!*.moon

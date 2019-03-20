@@ -73,7 +73,7 @@ class Builder
         ok, parser = pcall =>
             httpc = require'resty.http'.new!
             parts = [i[0] for i in ngx.re.gmatch httpc\parse_uri(url)[2], '[^\\.]+']
-            require 'driver.' .. parts[#parts - 1] .. '_' .. parts[#parts]
+            require 'ccnr3.drv.' .. parts[#parts - 1] .. '_' .. parts[#parts]
         return if not ok
         builder = Builder parser
         builder.url = url
