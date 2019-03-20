@@ -1,0 +1,14 @@
+#!/bin/sh
+
+DB=$1
+[ -d "$DB" ] || DB="`'dirname' "$0"`/../../../db"
+DB="`'realpath' "$DB"`"
+[ -d "$DB" ] || exit 1
+shift
+DUE=$1
+'test' 15 -lt $DUE 2> /dev/null || DUE=15
+
+for item in `'find' "$DB" -mindepth 2 -maxdepth 2 -type f -name toc.xml -mmin "+$DUE" | 'sed' -e 's/ /\/\//g'`; do
+    item=`echo "$item" | 'sed' -e 's/\/\// /g'`
+    [ -f "`'dirname' "$item"`/SOURCE" ] || 'rm' -f "$item"
+done

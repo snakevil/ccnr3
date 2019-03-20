@@ -1,5 +1,4 @@
 *
 !.gitignore
 
-!cron/
-!gui/
+!update-toc

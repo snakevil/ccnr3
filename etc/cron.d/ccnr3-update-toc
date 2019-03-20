@@ -1,0 +1,1 @@
+*/15 * * * * www-data /var/www/szen.in/www/n/app/share/cron/update-toc 60
