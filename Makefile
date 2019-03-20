@@ -6,6 +6,9 @@ MOONs := libexec/app.moon $(foreach dir, \
 	$(wildcard $(dir)/*.moon) \
 )
 LUAs := $(patsubst %.moon, $(LUADIR)/%.lua, $(MOONs))
+ASTs := etc/nginx/sites-available/ccnr3.sub
+RESs := $(patsubst %, $(LUADIR)/%, $(ASTs))
+$(info $(RESs))
 
 .PHONY: all clean dist lua
 
@@ -16,10 +19,14 @@ clean:
 	-$(RM) -r $(LUADIR)/*
 
 dist: $(DESTDIR)/$(DIST)
-$(DESTDIR)/$(DIST): $(LUAs)
+$(DESTDIR)/$(DIST): $(LUAs) $(RESs)
 	tar -cf - -C $(DESTDIR) --exclude '.*' app ui | xz -9 > $@
 
 lua: $(LUAs)
 $(LUAs): $(LUADIR)/%.lua: %.moon
 	@mkdir -p $(@D)
 	moonc -p $^ > $@
+
+$(RESs): $(LUADIR)/%: %
+	@mkdir -p $(@D)
+	'cp' -f $^ $@
