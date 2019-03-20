@@ -6,9 +6,8 @@ MOONs := libexec/app.moon $(foreach dir, \
 	$(wildcard $(dir)/*.moon) \
 )
 LUAs := $(patsubst %.moon, $(LUADIR)/%.lua, $(MOONs))
-ASTs := etc/nginx/sites-available/ccnr3.sub
+ASTs := etc/nginx/sites-available/ccnr3.sub sbin/upgrade-db
 RESs := $(patsubst %, $(LUADIR)/%, $(ASTs))
-$(info $(RESs))
 
 .PHONY: all clean dist lua
 

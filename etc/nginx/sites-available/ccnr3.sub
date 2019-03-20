@@ -10,7 +10,7 @@ location /n/db/ {
     internal;
 }
 
-location /n/ui/ {
+location /n/gui/ {
     internal;
 }
 
@@ -35,6 +35,6 @@ location @ccnr3 {
         return 404;
     }
     resolver 114.114.114.114;
-    lua_code_cache off;
+    lua_code_cache on;
     content_by_lua_file $document_root/n/app/libexec/app.lua;
 }

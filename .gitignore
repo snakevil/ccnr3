@@ -4,6 +4,7 @@
 !etc/
 !lib/
 !libexec/
+!sbin/
 !share/
 !var/
 !Makefile
