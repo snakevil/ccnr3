@@ -1,11 +1,10 @@
-lor = require'lor.index'!
-
 {
     dispatch: -> {
         with require'lor.index'!
-            \use require'middleware.polyfill'
+            \use require'middleware.setup'
+            \use '/n/db/:novel', require'middleware.toc'
             \get '/n/db/:novel/toc.xml', require'controller.toc'
-            \get '/n/db/:novel/:chapter.xml', require'controller.chapter'
+            \get '/n/db/:novel/:index', require'controller.chapter'
             \run!
     }
 }

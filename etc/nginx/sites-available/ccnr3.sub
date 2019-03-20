@@ -17,7 +17,6 @@ location /n/ui/ {
 location /n/ {
     # /var/
     error_page 404 = @ccnr3;
-    set $n_orig_uri $uri;
     # fix trailing slash for novel directories
     rewrite ^(/n)(/[^\.]+)$ $1/db$2;
     if (-d $document_root$uri) {
