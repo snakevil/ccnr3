@@ -6,6 +6,7 @@
             ssl_verify: false,
             keepalive: false
         }
+        return if err
         clob = resp.body
         data = {}
         l, r, e = ngx.re.find clob, '<meta property="og:title" content="(.+?)"/>'
@@ -26,10 +27,13 @@
         data
 
     chapter: (url) ->
-        clob = ''
-        with io.open '/tmp/chapter.txt'
-            clob = \read '*a'
-            \close!
+        httpc = require'resty.http'.new!
+        resp, err = httpc\request_uri url, {
+            ssl_verify: false,
+            keepalive: false
+        }
+        return if err
+        clob = resp.body
         data = {}
         l, r, e = ngx.re.find clob, '<h1>(.+?)</h1>'
         return if e
