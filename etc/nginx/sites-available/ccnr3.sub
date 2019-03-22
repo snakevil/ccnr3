@@ -17,7 +17,7 @@ location /n/gui/ {
 location /n/ {
     # /var/
     error_page 404 = @ccnr3;
-    # fix trailing slash for novel directories
+    # 修正小说目录 URL 尾部缺失的 / 符号
     rewrite ^(/n)(/[^\.]+)$ $1/db$2;
     if (-d $document_root$uri) {
         rewrite ^(/n)/db(/.*[^/])$ $1$2/ permanent;
@@ -26,15 +26,17 @@ location /n/ {
     rewrite ^(/n/db/.+/.+)$ $1.xml break;
     # /n/db/foo/ -> /var/db/foo/toc.xml
     rewrite ^(/n/db/.+)/$ $1/toc.xml break;
-    # /n/foo -> /var/ui/foo
-    rewrite ^(/n)(/.*)$ $1/ui$2 break;
+    # /n/UPSTREAM -> /var/db/-new?UPSTREAM
+    rewrite ^(/n)/(https?:/.*)$ $1/db/-?-=$2 break;
+    # /n/foo -> /var/gui/foo
+    rewrite ^(/n)(/.*)$ $1/gui$2 break;
 }
 
 location @ccnr3 {
     if ($uri !~ ^/n/db/) {
         return 404;
     }
-    resolver 114.114.114.114;
+    resolver 8.8.8.8;
     lua_code_cache on;
     content_by_lua_file $document_root/n/app/libexec/app.lua;
 }

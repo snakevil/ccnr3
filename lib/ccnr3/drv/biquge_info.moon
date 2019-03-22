@@ -1,7 +1,9 @@
+Http = require'resty.http'
+
 {
     domain: 'biquge.info',
     toc: (url) ->
-        httpc = require'resty.http'.new!
+        httpc = Http.new!
         resp, err = httpc\request_uri url, {
             ssl_verify: false,
             keepalive: false
@@ -27,7 +29,7 @@
         data
 
     chapter: (url) ->
-        httpc = require'resty.http'.new!
+        httpc = Http.new!
         resp, err = httpc\request_uri url, {
             ssl_verify: false,
             keepalive: false

@@ -6,7 +6,6 @@
         return nil, e if not file
         with file
             \write data
-            \flush!
             \close!
         data
     resp.xml = (data) =>
