@@ -30,13 +30,24 @@ location /n/ {
     rewrite ^(/n)/(https?:/.*)$ $1/db/-?-=$2 break;
     # /n/foo -> /var/gui/foo
     rewrite ^(/n)(/.*)$ $1/gui$2 break;
+
+    gzip on;
+    gzip_comp_level 4;
+    gzip_min_length 256;
+    gzip_types application/xml;
 }
 
 location @ccnr3 {
     if ($uri !~ ^/n/db/) {
         return 404;
     }
+
     resolver 8.8.8.8;
     lua_code_cache on;
     content_by_lua_file $document_root/n/app/libexec/app.lua;
+
+    gzip on;
+    gzip_comp_level 4;
+    gzip_min_length 256;
+    gzip_types application/xml;
 }
