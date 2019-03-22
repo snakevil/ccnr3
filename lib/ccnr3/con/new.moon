@@ -17,4 +17,9 @@ Lfs = require'lfs'
         with file
             \write url
             \close!
+        file = io.open path .. '/toc.xml', 'w+'
+        if file
+            with file
+                \write toc
+                \close!
     resp\redirect '/n/' .. title .. '/'
