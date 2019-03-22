@@ -1,3 +1,17 @@
+Http = require'resty.http'
+
+_fetch = (url) ->
+    httpc = Http.new!
+    resp, err = httpc\request_uri url, {
+        headers: {
+            ['User-Agent']: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15'
+        },
+        ssl_verify: false,
+        keepalive: false
+    }
+    return if err
+    resp.body
+
 _trim = (str) ->
     str = ngx.re.gsub str, '^\\s*(\\S.*?)\\s*$', '$1'
     str
@@ -17,7 +31,7 @@ class Builder
         @domain = parser.domain
 
     toc: =>
-        data = @_.toc @url
+        data = @_.toc _fetch @url
         return if not data
         (
             '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' ..
@@ -44,7 +58,7 @@ class Builder
         )
 
     chapter: (ref, metas) =>
-        data = @_.chapter @url .. ref
+        data = @_.chapter _fetch @url .. ref
         return if not data
         (
             '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' ..

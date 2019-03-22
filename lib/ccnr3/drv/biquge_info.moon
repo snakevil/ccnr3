@@ -1,15 +1,7 @@
-Http = require'resty.http'
-
 {
     domain: 'biquge.info',
-    toc: (url) ->
-        httpc = Http.new!
-        resp, err = httpc\request_uri url, {
-            ssl_verify: false,
-            keepalive: false
-        }
-        return if err
-        clob = resp.body
+    toc: (clob) ->
+        return if not clob
         data = {}
         l, r, e = ngx.re.find clob, '<meta property="og:title" content="(.+?)"/>'
         return if e
@@ -28,14 +20,8 @@ Http = require'resty.http'
         data.chapters = [{ i[1], i[2] } for i in ngx.re.gmatch clob, '<dd><a href="(\\d+\\.html)" title="[^"]+">(.+)</a></dd>']
         data
 
-    chapter: (url) ->
-        httpc = Http.new!
-        resp, err = httpc\request_uri url, {
-            ssl_verify: false,
-            keepalive: false
-        }
-        return if err
-        clob = resp.body
+    chapter: (clob) ->
+        return if not clob
         data = {}
         l, r, e = ngx.re.find clob, '<h1>(.+?)</h1>'
         return if e
