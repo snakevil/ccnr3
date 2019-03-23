@@ -1,6 +1,6 @@
 (req, resp, next) ->
     -- 确保正确读取目录数据。
-    path = ngx.re.gsub ngx.var.document_root .. ngx.var.uri, '[^/]+\\.xml$', ''
+    path = ngx.re.gsub ngx.var.document_root .. req.ctx.db .. ngx.var.uri, '[^/]+\\.xml$', ''
     file = io.open path .. 'SOURCE'
     return resp\status 404 if not file
     with file

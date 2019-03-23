@@ -9,6 +9,6 @@
     data = driver\chapter chapters[index], novel: req.params.novel
     return resp\status 504 if not data
     with resp
-        \store ngx.var.document_root .. ngx.var.uri, data
+        \store ngx.var.document_root .. req.ctx.db .. ngx.var.uri, data
         \set_header 'Last-Modified', ngx.http_time ngx.time!
         \xml data

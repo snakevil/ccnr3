@@ -38,9 +38,22 @@ location /n/ {
 }
 
 location @ccnr3 {
-    if ($uri !~ ^/n/db/) {
+    set $lua_status 404;
+    set $lua_assert "$request_method: $uri";
+    if ($lua_assert = 'GET: /n/db/-') {
+        set $lua_status 200;
+    }
+    if ($lua_assert ~ "^GET: /n/db/[^/]+/(toc|\d+)\.xml$") {
+        set $lua_status 200;
+    }
+    if ($lua_status = 404) {
         return 404;
     }
+    set $lua_status '';
+    set $lua_assert '';
+
+    set $lua_db '/n/db';
+    rewrite ^/n/db(/.*)$ $1 break;
 
     resolver 8.8.8.8;
     lua_code_cache on;

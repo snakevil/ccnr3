@@ -3,12 +3,12 @@
     toc: (clob) ->
         return if not clob
         data = {}
-        l, r, e = ngx.re.find clob, '<meta property="og:title" content="(.+?)"/>'
-        return if e
+        l, r = ngx.re.find clob, '<meta property="og:title" content="(.+?)"/>'
+        return if not l
         data.title = clob\sub 35 + l, r - 3
         clob = clob\sub 1 + r
-        l, r, e = ngx.re.find clob, '<meta property="og:novel:author" content="(.+?)"/>'
-        return if e
+        l, r = ngx.re.find clob, '<meta property="og:novel:author" content="(.+?)"/>'
+        return if not l
         data.author = clob\sub 42 + l, r - 3
         clob = clob\sub 1 + r
         _, l = clob\find '<div id="list">'
@@ -23,8 +23,8 @@
     chapter: (clob) ->
         return if not clob
         data = {}
-        l, r, e = ngx.re.find clob, '<h1>(.+?)</h1>'
-        return if e
+        l, r = ngx.re.find clob, '<h1>(.+?)</h1>'
+        return if not l
         data.title = clob\sub 4 + l, r - 5
         clob = clob\sub 1 + r
         r = clob\find '<div class="bottem">'

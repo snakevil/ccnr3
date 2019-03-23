@@ -1,6 +1,6 @@
 (req, resp, next) ->
     resp\set_header 'Server', 'CCNR/3'
-    req.ctx = {}
+    req.ctx = db: ngx.var.lua_db
     resp.store = (path, data) =>
         file, e = io.open path, 'w+'
         return nil, e if not file
