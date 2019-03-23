@@ -11,4 +11,9 @@
     with resp
         \store ngx.var.document_root .. req.ctx.db .. ngx.var.uri, data
         \set_header 'Last-Modified', ngx.http_time ngx.time!
-        \xml data
+        if 'HEAD' == req.method
+            \set_header 'Content-Type', 'application/xml'
+            \set_header 'Content-Length', #data
+            \set_header 'Accept-Ranges', 'bytes'
+        else
+            \xml data
