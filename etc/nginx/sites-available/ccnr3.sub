@@ -43,7 +43,7 @@ location @ccnr3 {
     if ($lua_assert = 'GET: /n/db/-') {
         set $lua_status 200;
     }
-    if ($lua_assert ~ "^(GET|HEAD): /n/db/[^/]+/(toc|\d+)\.xml$") {
+    if ($lua_assert ~ "^(GET|HEAD): /n/db/[^/]+/(toc|\d+|\-size)\.xml$") {
         set $lua_status 200;
     }
     if ($lua_status = 404) {
