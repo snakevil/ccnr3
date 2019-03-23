@@ -2,6 +2,6 @@
 !.gitignore
 
 !cmw/
-!con/
+!ctr/
 !drv/
 !*.moon
