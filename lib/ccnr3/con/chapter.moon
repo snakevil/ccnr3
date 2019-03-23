@@ -8,5 +8,7 @@
     return resp\status 501 if not driver
     data = driver\chapter chapters[index], novel: req.params.novel
     return resp\status 504 if not data
-    resp\store ngx.var.document_root .. ngx.var.uri, data
-    resp\xml data
+    with resp
+        \store ngx.var.document_root .. ngx.var.uri, data
+        \set_header 'Last-Modified', ngx.http_time ngx.time!
+        \xml data
