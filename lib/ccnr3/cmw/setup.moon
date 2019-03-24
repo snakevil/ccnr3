@@ -9,6 +9,6 @@
             \close!
         data
     resp.xml = (data) =>
-        @set_header 'Content-Type', 'application/xml; charset=utf-8'
+        @set_header 'Content-Type', 'text/xml; charset=UTF-8'
         ngx.say data
     next!

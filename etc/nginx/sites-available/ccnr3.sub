@@ -1,7 +1,3 @@
-types {
-    application/xml xml;
-}
-
 location /n/app/ {
     internal;
 }
@@ -30,6 +26,12 @@ location /n/ {
     rewrite ^(/n)/(https?:/.*)$ $1/db/-?-=$2 break;
     # /n/foo -> /var/gui/foo
     rewrite ^(/n)(/.*)$ $1/gui$2 break;
+
+    types {
+        text/html html;
+        text/xml xml;
+        text/xsl xslt;
+    }
 
     gzip on;
     gzip_comp_level 4;
