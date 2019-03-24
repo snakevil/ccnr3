@@ -6,7 +6,7 @@ export default function (props: { [prop: string]: any }) {
             <p>TODO: Chapter</p>
             <dl>
                 <dt>Novel:</dt>
-                <dd>{ props.novel }</dd>
+                <dd>{ props.id }</dd>
                 <dt>Index:</dt>
                 <dd>{ props.index }</dd>
             </dl>

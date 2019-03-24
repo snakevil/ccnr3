@@ -11,7 +11,7 @@
             </xsl:with-param>
             <xsl:with-param name="title" select="Title" />
             <xsl:with-param name="content">
-                <ol id="data">
+                <ol id="data" style="display:none">
                     <xsl:attribute name="data-title">
                         <xsl:value-of select="Title" />
                     </xsl:attribute>
