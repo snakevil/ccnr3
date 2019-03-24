@@ -11,12 +11,9 @@
             </xsl:with-param>
             <xsl:with-param name="title" select="Title" />
             <xsl:with-param name="content">
-                <ol id="data" style="display:none">
+                <ol id="data" style="display:none" data-index="z">
                     <xsl:attribute name="data-title">
                         <xsl:value-of select="Title" />
-                    </xsl:attribute>
-                    <xsl:attribute name="data-toc">
-                        <xsl:value-of select="@toc" />
                     </xsl:attribute>
                     <xsl:apply-templates select="Paragraphs" />
                 </ol>

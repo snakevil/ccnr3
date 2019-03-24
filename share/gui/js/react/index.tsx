@@ -1,50 +1,30 @@
 import * as React from 'react';
 
-import * as model from '../model';
+import { Bookshelf } from '../model';
 import * as view from './view';
 
+
 export default function (props: { [prop: string]: any }) {
-    const prefix = props.prefix || '',
-        uri = decodeURI(location.pathname),
+    const bookshelf = Bookshelf.load(),
+        url = decodeURI(location.href),
+        raw = props.data,
         [
-            state,
-            updateState
-        ] = React.useState({
-            url: location.href,
-            data: props.data
-        }),
-        data = state.data,
-        $go = (url: string, data: { title: string, [key: string]: any }) => {
-            history.replaceState(data, data.title, url);
-            updateState({ url, data });
-        };
+            target,
+            setTarget
+        ] = React.useState(raw ? (raw.index ? null : bookshelf.import(raw).as(url)) : bookshelf);
 
     try {
-        if (-1 < uri.indexOf(prefix)) {
-            const meta = uri.substr(prefix.length).match(/^([^\/]+)\/(.*)$/);
-            if (meta) {
-                if (!state.data)
-                    throw "页面关键数据缺失。";
-                if (meta[2]) return (
-                    <view.Chapter
-                        $go={ $go }
-                        id={ meta[1] }
-                        index={ meta[2] }
-                        data={ data.children ? new model.Chapter(data) : data }
-                        />
-                );
-                return (
-                    <view.TOC
-                        $go={ $go }
-                        id={ meta[1] }
-                        data={ data.children ? new model.TOC(data) : data }
-                        />
-                );
-            } else if (uri == prefix) return (
-                <view.Bookshelf $go={ $go } />
-            );
+        if (!target) {
+            const matched = url.match(/^(.*\/)([^\/]+)\/(\d+)$/);
+            if (!matched) throw '无法找到正确的功能路径。';
+            raw.index = + matched[3];
+            bookshelf.as(matched[1]).fetch(matched[2]).then(novel => setTarget(novel.import(raw) as any));
+            return <address>Loading...</address>;
         }
-        throw "无法找到正确的功能路径。";
+        if ('author' in target) return <view.TOC data={ target } />;
+        if ('prefix' in target) return <view.Bookshelf data={ target } />;
+        if ('index' in target) return <view.Chapter data={ target } />;
+        throw target;
     } catch (error) {
         return (
             <view.Error>{ error }</view.Error>

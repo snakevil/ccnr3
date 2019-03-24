@@ -1,7 +1,5 @@
-import TOC from './toc';
-import Chapter from './chapter';
+import Bookshelf from './bookshelf';
 
 export {
-    TOC,
-    Chapter
+    Bookshelf
 };

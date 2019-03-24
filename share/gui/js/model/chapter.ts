@@ -1,36 +1,52 @@
+import Novel from './novel';
+
 export default class Chapter {
+    /**
+     * 隶属书籍。
+     */
+    readonly novel: Novel;
+
     /**
      * 章节标题。
      */
     readonly title: string;
 
     /**
-     * 源 URI。
+     * 序号。
      */
-    readonly ref: string;
+    readonly index: number;
 
     /**
      * 段落列表。
      */
     readonly paragraphs: string[];
 
-    constructor (data: { title: string, ref: string, children: string[] });
-    constructor (title: string, ref: string, paragraphs: string[]);
-    constructor (title: any, ref?: string, paragraphs?: string[]) {
-        if ('object' == typeof title) {
-            ref = title.ref;
-            paragraphs = title.children;
-            title = title.title;
-        }
+    constructor (novel: Novel, title: string, index: number, paragraphs: string[]) {
+        this.novel = novel;
         this.title = title;
-        this.ref = ref;
+        this.index = index;
         this.paragraphs = paragraphs.slice(0);
     }
 
     /**
-     * 加载。
+     * 标记阅读。
      */
-    static from (url: string): Promise<Chapter> {
+    read (): Chapter {
+        this.novel.last = this;
+        return this;
+    }
+
+    /**
+     * 用于重建书架时填充数据。
+     */
+    static mock (novel: Novel, title: string, index: number): Chapter {
+        return new Chapter(novel, title, index, []);
+    }
+
+    /**
+     * 读取并解析服务端数据。
+     */
+    static load (url: string): Promise<{ title: string, index: number, children: string[] }> {
         return fetch(url).then((response) => {
             let reason = '';
             switch (response.status) {
@@ -58,11 +74,11 @@ export default class Chapter {
                 paragraphs = doc.evaluate('//Paragraph', doc, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
             for (let i = 0, j = paragraphs.snapshotLength; i < j; i++)
                 children.push(paragraphs.snapshotItem(i).textContent);
-            return new Chapter(
-                doc.evaluate('//Title', doc, null, XPathResult.STRING_TYPE, null).stringValue,
-                doc.evaluate('/Chapter/@ref', doc, null, XPathResult.STRING_TYPE, null).stringValue,
+            return {
+                title: doc.evaluate('//Title', doc, null, XPathResult.STRING_TYPE, null).stringValue,
+                index: + url.replace(/^.*\/([\d+])$/, '$1'),
                 children
-            );
+            };
         });
     }
 }

@@ -1,15 +1,10 @@
 import * as React from 'react';
 
-import { Chapter } from '../../model';
-
 export default function (props: { [prop: string]: any }) {
     const toc = props.data,
         onclick = (event: React.MouseEvent) => {
             event.preventDefault();
             const url = (event.target as HTMLAnchorElement).href;
-            Chapter.from(url).then((chapter: Chapter) => {
-                props.$go(url, chapter);
-            });
         };
     return (
         <>

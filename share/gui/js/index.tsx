@@ -3,19 +3,19 @@ import * as ReactDOM from 'react-dom';
 
 import CCNR3 from './react';
 
-const el = document.getElementById('data'),
+const element = document.getElementById('data'),
     data: { [key: string]: any } = {
         children: []
     };
-if (el) {
-    document.body.removeChild(el);
-    for (let i in el.dataset)
-        data[i] = el.dataset[i];
-    for (let i = 0; i < el.children.length; i++)
-        data.children.push(el.children[i].textContent);
+if (element) {
+    document.body.removeChild(element);
+    for (let i in element.dataset)
+        data[i] = element.dataset[i];
+    for (let i = 0; i < element.children.length; i++)
+        data.children.push(element.children[i].textContent);
 }
 
 ReactDOM.render(
-    <CCNR3 prefix='/n/' data={ data.title ? data : null } />,
+    <CCNR3 data={ element ? data : null } />,
     document.body.firstElementChild
 );
