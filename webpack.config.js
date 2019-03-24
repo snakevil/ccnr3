@@ -1,7 +1,8 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin'),
+    CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: __dirname + '/share/gui/js/index.tsx',
+    entry: __dirname + '/share/gui/app.ts',
     output: {
         filename: 'app.js',
         path: __dirname + '/var/gui'
@@ -10,7 +11,6 @@ module.exports = {
         extensions: [
             '.ts',
             '.tsx',
-            '.js',
             '.js'
         ]
     },
@@ -28,6 +28,13 @@ module.exports = {
             {
                 test: /\.html$/,
                 loader: 'html-loader'
+            },
+            {
+                test: /\.xslt$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[path][name].[ext]'
+                }
             }
         ]
     },
@@ -35,6 +42,12 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: 'share/gui/index.html',
             inject: false
-        })
+        }),
+        new CopyWebpackPlugin([
+            {
+                from: '*.xslt',
+                context: 'share/gui/'
+            }
+        ])
     ]
 };

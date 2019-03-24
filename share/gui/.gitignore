@@ -2,4 +2,8 @@
 !.gitignore
 
 !js/
+!app.ts
 !index.html
+!chapter.xslt
+!page.xslt
+!toc.xslt
