@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { Bookshelf } from '../../model';
-import { Book } from '../component';
+import { Bookshelf } from '../../../model';
+import Book from './book';
 
 export default function (props: { [prop: string]: any }) {
     document.title = '书架 | CCNR/3';
