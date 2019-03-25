@@ -1,6 +1,6 @@
 import Novel from './novel';
 
-const KEY = '        ';
+const KEY = '         ';
 let instance: Bookshelf;
 
 export default class Bookshelf {
@@ -28,7 +28,7 @@ export default class Bookshelf {
         const db = [];
         for (let i in this._db)
             db.push(this._db[i]);
-        db.sort((a, b) => - a.readTime + b.readTime);
+        db.sort((a, b) => - a.time + b.time);
         return db;
     }
 

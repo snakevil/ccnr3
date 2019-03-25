@@ -32,7 +32,7 @@ export default class Chapter {
      * 标记阅读。
      */
     read (): Chapter {
-        this.novel.last = this;
+        this.novel.read = this;
         return this;
     }
 

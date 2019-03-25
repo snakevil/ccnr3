@@ -20,60 +20,70 @@ export default class Novel {
     /**
      * 章节标题列表。
      */
-    chapters: string[];
+    private _c: string[];
+
+    get chapters (): string [] {
+        return this._c;
+    }
+
+    set chapters (list: string[]) {
+        this._c = list;
+        const length = list.length;
+        this._l = Chapter.mock(this, this._c[length - 1], length);
+    }
 
     /**
-     * 记录的章节数量摘要。
+     * 最新章节。
      */
-    private _s: number;
+    private _l: Chapter;
 
     /**
      * 获取章节数量。
      */
-    get size (): number {
-        return this.chapters.length || this._s;
+    get length (): number {
+        return this.chapters.length || (this._l ? this._l.index : 0);
     }
-
-    /**
-     * 最后抓取时间。
-     */
-    private _t: number;
 
     /**
      * 最后阅读章节。
      */
-    private _c: Chapter;
+    private _r: Chapter;
+
+    /**
+     * 获取最后阅读章节。
+     */
+    get read (): Chapter {
+        return this._r;
+    }
 
     /**
      * 设置最后阅读章节。
      */
-    set last (chapter: Chapter) {
-        if ((this._c && this._c.index || 0) < chapter.index)
-            this._c = chapter;
-        this._r = + new Date();
+    set read (chapter: Chapter) {
+        if ((this._r && this._r.index || 0) < chapter.index)
+            this._r = chapter;
+        this._t = + new Date();
         this.bookshelf.save();
     }
 
     /**
      * 最后阅读时间。
      */
-    private _r: number;
+    private _t: number;
 
     /**
      * 获取最后阅读时间。
      */
-    get readTime (): number {
-        return this._r;
+    get time (): number {
+        return this._t;
     }
 
     constructor (bookshelf: Bookshelf, title: string, author: string) {
         this.bookshelf = bookshelf;
         this.title = title;
         this.author = author;
-        this.chapters = [];
-        this._s = 0;
-        this._t = + new Date();
-        this._r = 0;
+        this._c = [];
+        this._t = 0;
     }
 
     /**
@@ -87,26 +97,28 @@ export default class Novel {
     /**
      * 用于保存书架时书籍状态。
      */
-    expr (): [string, string, number, string, number, number] {
+    expr (): [string, string, number, string, number, string, number] {
         return [
             this.title,
             this.author,
-            this.size,
-            this._c ? this._c.title : '',
-            this._c ? this._c.index : 0,
-            this._r
+            this.length,
+            this._l ? this._l.title : '',
+            this._r ? this._r.index : 0,
+            this._r ? this._r.title : '',
+            this._t
         ];
     }
 
     /**
      * 用于重建书架时填充数据。
      */
-    static mock (bookshelf: Bookshelf, stats: [string, string, number, string, number, number]): Novel {
+    static mock (bookshelf: Bookshelf, stats: [string, string, number, string, number, string, number]): Novel {
         const novel = new Novel(bookshelf, stats[0], stats[1]);
-        novel._s = stats[2];
+        if (stats[2])
+            novel._l = Chapter.mock(novel, stats[3], stats[2]);
         if (stats[4])
-            novel._c = Chapter.mock(novel, stats[3], stats[4]);
-        novel._r = stats[5];
+            novel._r = Chapter.mock(novel, stats[5], stats[4]);
+        novel._t = stats[6];
         return novel;
     }
 
