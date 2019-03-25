@@ -1,17 +1,21 @@
 import * as React from 'react';
 
 import { Bookshelf } from '../../model';
+import { Book } from '../component';
 
 export default function (props: { [prop: string]: any }) {
+    document.title = '书架 | CCNR/3';
+
     return (
-        <ol>
-            {
-                (props.data as Bookshelf).novels.map((novel, index) => (
-                    <li key={ index }>
-                        <a href={ novel.title + '/' }>{ novel.title }</a>
-                    </li>
-                ))
-            }
-        </ol>
+        <>
+            <h1>书架</h1>
+            <ol>
+                {
+                    (props.data as Bookshelf).novels.map((novel, index) => (
+                        <Book key={ index } data={ novel } $go={ props.$go } />
+                    ))
+                }
+            </ol>
+        </>
     )
 }

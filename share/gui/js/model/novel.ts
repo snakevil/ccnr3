@@ -38,6 +38,13 @@ export default class Novel {
     private _l: Chapter;
 
     /**
+     * 获取最新章节。
+     */
+    get last (): Chapter {
+        return this._l;
+    }
+
+    /**
      * 获取章节数量。
      */
     get length (): number {
@@ -120,6 +127,14 @@ export default class Novel {
             novel._r = Chapter.mock(novel, stats[5], stats[4]);
         novel._t = stats[6];
         return novel;
+    }
+
+    update (): Promise<Novel> {
+        if (this._c.length) return Promise.resolve(this);
+        return Novel.load(this.bookshelf.prefix + this.title).then((data) => {
+            this.chapters = data.children;
+            return this;
+        });
     }
 
     /**

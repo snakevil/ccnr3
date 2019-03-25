@@ -1,4 +1,5 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin'),
+const MiniCssExtractPlugin = require("mini-css-extract-plugin"),
+    HtmlWebpackPlugin = require('html-webpack-plugin'),
     CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -26,19 +27,29 @@ module.exports = {
                 loader: "source-map-loader"
             },
             {
-                test: /\.html$/,
-                loader: 'html-loader'
+                test: /\.scss$/,
+                exclude: /node_modules/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            implementation: require('sass')
+                        }
+                    }
+                ]
             },
             {
-                test: /\.xslt$/,
-                loader: 'file-loader',
-                options: {
-                    name: '[path][name].[ext]'
-                }
+                test: /\.html$/,
+                loader: 'html-loader'
             }
         ]
     },
     plugins: [
+        new MiniCssExtractPlugin({
+            filename: 'app.css'
+        }),
         new HtmlWebpackPlugin({
             template: 'share/gui/index.html',
             inject: false

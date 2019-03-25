@@ -1,0 +1,56 @@
+.page-bookshelf {
+    ol {
+        border-top: 1px solid #eee;
+    }
+
+    li {
+        padding: 1em 0;
+        border-bottom: 1px solid #eee;
+        line-height: 1.5;
+        cursor: pointer;
+    }
+
+    address, dl {
+        color: #999;
+        display: inline;
+    }
+
+    dt, dd {
+        display: none;
+    }
+
+    dd.unread {
+        display: inline;
+
+        &::before {
+            content: '・';
+        }
+
+        &::after {
+            content: '章未读';
+        }
+    }
+
+    dt:nth-of-type(2) {
+        display: inline;
+
+        &::before {
+            content: '';
+            display: block;
+        }
+
+        &::after {
+            content: '：';
+        }
+
+        + dd {
+            display: inline;
+        }
+    }
+
+    @media screen and (max-width: 1024px) {
+        a {
+            color: #999;
+        }
+    }
+}

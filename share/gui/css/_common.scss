@@ -1,0 +1,44 @@
+body {
+    font: 16px/1 sans-serif;
+    margin: 0 1em;
+
+    > div {
+        max-width: 987px;
+        margin: 0 auto;
+
+        @media screen and (max-width: 986px) {
+            width: 100%;
+        }
+    }
+}
+
+ol, ul, li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+dl, dd {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font: 2em serif;
+    margin: .5em 0;
+    color: #ccc;
+}
+
+h2 {
+    font-size: 1.25em;
+    font-weight: normal;
+    margin: 0;
+}
+
+address {
+    font-style: normal;
+}
+
+a {
+    text-decoration: none;
+}

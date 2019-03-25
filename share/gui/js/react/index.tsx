@@ -11,7 +11,11 @@ export default function (props: { [prop: string]: any }) {
         [
             target,
             setTarget
-        ] = React.useState(raw ? (raw.index ? null : bookshelf.import(raw).as(url)) : bookshelf);
+        ] = React.useState(raw ? (raw.index ? null : bookshelf.import(raw).as(url)) : bookshelf),
+        $go = React.useCallback((url, data) => {
+            history.replaceState(null, null, url);
+            setTarget(data);
+        }, []);
 
     try {
         if (!target) {
@@ -21,9 +25,9 @@ export default function (props: { [prop: string]: any }) {
             bookshelf.as(matched[1]).fetch(matched[2]).then(novel => setTarget(novel.import(raw) as any));
             return <address>Loading...</address>;
         }
-        if ('author' in target) return <view.TOC data={ target } />;
-        if ('prefix' in target) return <view.Bookshelf data={ target } />;
-        if ('index' in target) return <view.Chapter data={ target } />;
+        if ('author' in target) return <view.TOC data={ target } $go={ $go } />;
+        if ('prefix' in target) return <view.Bookshelf data={ target } $go={ $go } />;
+        if ('index' in target) return <view.Chapter data={ target } $go={ $go } />;
         throw target;
     } catch (error) {
         return (
