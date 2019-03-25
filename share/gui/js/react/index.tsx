@@ -11,7 +11,7 @@ export default function (props: { [prop: string]: any }) {
         [
             target,
             setTarget
-        ] = React.useState(raw ? (raw.index ? null : bookshelf.import(raw).as(url)) : bookshelf),
+        ] = React.useState(raw ? (raw.index ? null : bookshelf.import(raw).as(url)) : bookshelf.as(url)),
         $go = React.useCallback((url, data) => {
             history.replaceState(null, null, url);
             setTarget(data);

@@ -12,6 +12,7 @@ export default function (props: { [prop: string]: any }) {
             );
         }, []);
 
+    document.title = novel.title + ' | CCNR/3';
     document.body.className = 'page-toc';
 
     return (

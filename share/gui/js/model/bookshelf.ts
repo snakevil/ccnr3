@@ -49,7 +49,8 @@ export default class Bookshelf {
      * 设置根路径。
      */
     as (url: string): Bookshelf {
-        this._as = url;
+        if (!this._as)
+            this._as = url;
         return this;
     }
 
