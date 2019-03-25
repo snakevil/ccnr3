@@ -4,7 +4,7 @@
     }
 
     li {
-        padding: 1em 0;
+        padding: .8em 0;
         border-bottom: 1px solid #eee;
         line-height: 1.5;
         cursor: pointer;
@@ -45,12 +45,6 @@
 
         + dd {
             display: inline;
-        }
-    }
-
-    @media screen and (max-width: 1024px) {
-        a {
-            color: #999;
         }
     }
 }

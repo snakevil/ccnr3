@@ -5,6 +5,7 @@ import { Book } from '../component';
 
 export default function (props: { [prop: string]: any }) {
     document.title = '书架 | CCNR/3';
+    document.body.className = 'page-bookshelf';
 
     return (
         <>

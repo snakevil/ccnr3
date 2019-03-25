@@ -76,7 +76,7 @@ export default class Chapter {
                 children.push(paragraphs.snapshotItem(i).textContent);
             return {
                 title: doc.evaluate('//Title', doc, null, XPathResult.STRING_TYPE, null).stringValue,
-                index: + url.replace(/^.*\/([\d+])$/, '$1'),
+                index: + url.replace(/^.*\/([\d]+)$/, '$1'),
                 children
             };
         });

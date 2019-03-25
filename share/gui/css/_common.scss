@@ -1,6 +1,7 @@
 body {
     font: 16px/1 sans-serif;
     margin: 0 1em;
+    color: #333;
 
     > div {
         max-width: 987px;
@@ -41,4 +42,14 @@ address {
 
 a {
     text-decoration: none;
+
+    @media screen and (max-width: 677px) {
+        &:visited {
+            color: #999;
+        }
+
+        &:link, &:active {
+            color: #333;
+        }
+    }
 }

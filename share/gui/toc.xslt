@@ -6,9 +6,6 @@
 
     <xsl:template match="/Novel">
         <xsl:call-template name="page.html">
-            <xsl:with-param name="type">
-                <xsl:text>toc</xsl:text>
-            </xsl:with-param>
             <xsl:with-param name="title" select="Title" />
             <xsl:with-param name="content">
                 <ol id="data" style="display:none">

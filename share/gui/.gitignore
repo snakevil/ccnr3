@@ -1,6 +1,7 @@
 *
 !.gitignore
 
+!css/
 !js/
 !app.ts
 !index.html
