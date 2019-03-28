@@ -1,99 +1,92 @@
-import Novel from './novel';
+import { IBookshelf } from './ibookshelf';
+import { Novel } from './novel';
+import { Chapter } from './chapter';
 
-const KEY = '         ';
-let instance: Bookshelf;
-
-export default class Bookshelf {
+export class Bookshelf implements IBookshelf {
     /**
-     * 根路径。
+     * 书籍列表。
      */
-    private _as: string;
+    private _d: Novel[];
 
-    /**
-     * 获取根路径。
-     */
-    get prefix (): string {
-        return this._as;
-    }
-
-    /**
-     * 追更书籍表。
-     */
-    private _db: { [title: string]: Novel };
-
-    /**
-     * 获取书籍列表。
-     */
     get novels (): Novel[] {
-        const db = [];
-        for (let i in this._db)
-            db.push(this._db[i]);
-        db.sort((a, b) => - a.time + b.time);
-        return db;
+        return this._d.sort((a, b) => b.time - a.time);
     }
 
-    constructor () {
-        this._as = '';
-        this._db = {};
+    /**
+     * URL。
+     */
+    private _u: string;
+
+    get url (): string {
+        return this._u;
+    }
+
+    /**
+     * localStorage 键名称。
+     */
+    private _k: string;
+
+    constructor (key: string) {
+        this._u = '';
+        this._k = key;
         try {
-            const db = JSON.parse(localStorage.getItem(KEY));
-            if (db instanceof Array)
-                db.forEach((item) => {
-                    const novel = Novel.mock(this, item);
-                    this._db[novel.title] = novel;
-                });
-        } catch (e) {}
-    }
-
-    /**
-     * 设置根路径。
-     */
-    as (url: string): Bookshelf {
-        if (!this._as)
-            this._as = url;
-        return this;
-    }
-
-    /**
-     * 保存。
-     */
-    save (): Bookshelf {
-        const db = [];
-        for (let i in this._db)
-            db.push(this._db[i].expr());
-        localStorage.setItem(KEY, JSON.stringify(db));
-        return this;
-    }
-
-    /**
-     * 拉取书籍。
-     */
-    fetch (title: string): Promise<Novel> {
-        const novel = this._db[title];
-        if (novel && novel.chapters.length) return Promise.resolve(novel);
-        return Novel.load(this._as + title).then(data => this.import(data));
-    }
-
-    /**
-     * 导入书籍。
-     */
-    import (data: { title: string, author: string, children: string[] }): Novel {
-        const exists = this._db[data.title],
-            novel = exists || new Novel(this, data.title, data.author);
-        novel.chapters = data.children;
-        if (!exists) {
-            this._db[data.title] = novel;
-            this.save();
+            const db = JSON.parse(localStorage.getItem(key));
+            this._d = db instanceof Array
+                ? db.map((item) => new Novel(this, item.shift()).import(item))
+                : [];
+        } catch (e) {
+            this._d = [];
         }
+    }
+
+    save (): Bookshelf {
+        localStorage.setItem(this._k, JSON.stringify(this._d.map((novel) => novel.export())));
+        return this;
+    }
+
+    /**
+     * 单例。
+     */
+    static $: Bookshelf;
+
+    /**
+     * 获取书架单例。
+     */
+    static load (): Bookshelf {
+        if (!Bookshelf.$)
+            Bookshelf.$ = new Bookshelf('       ');
+        return Bookshelf.$;
+    }
+
+    as (url: string): Bookshelf {
+        this._u = url;
+        return this;
+    }
+
+    get (title: string): Novel {
+        let novel = this._d.find((novel) => novel.title == title);
+        if (!novel) {
+            novel = new Novel(this, title, true);
+            this._d.push(novel);
+        } else
+            novel.load();
+        return novel;
+    };
+
+    set (title: string, author: string, chapters: string[]): Novel {
+        const novel = new Novel(this, title, chapters),
+            old = this._d.findIndex((novel) => novel.title == title);
+        if (-1 < old) {
+            novel.import(this._d[old].export().slice(1) as [string, number, number, number]);
+            this._d[old] = novel;
+        } else
+            this._d.push(novel);
         return novel;
     }
 
-    /**
-     * 获取唯一实例。
-     */
-    static load (): Bookshelf {
-        if (!instance)
-            instance = new Bookshelf();
-        return instance;
+    build (url: string, title: string, paragraphs: string[]): Chapter {
+        const matched = url.match(/^(.*\/)([^\/]+)\/(\d+)$/);
+        this._u = matched[1];
+        return this.get(decodeURI(matched[2])).set(+ matched[3], title, paragraphs);
     }
 }

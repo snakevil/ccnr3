@@ -1,76 +1,55 @@
-import Bookshelf from './bookshelf';
-import Chapter from './chapter';
+import { IBookshelf } from './ibookshelf';
+import { INovel } from './inovel';
+import { Chapter } from './chapter';
 
-export default class Novel {
-    /**
-     * 书架。
-     */
-    readonly bookshelf: Bookshelf;
+export class Novel implements INovel {
+    readonly bookshelf: IBookshelf;
 
     /**
-     * 书名。
+     * 是否加载完成。
+     *
+     * 加载完成值为 `true`，否则为 `Promise`。
      */
+    private _l: boolean | Promise<Novel>;
+
+    get loaded (): boolean | Promise<Novel> {
+        return this._l;
+    }
+
     readonly title: string;
 
     /**
      * 作者。
      */
-    readonly author: string;
+    private _a: string;
+
+    get author (): string {
+        return this._a;
+    }
 
     /**
-     * 章节标题列表。
+     * 章节列表。
      */
-    private _c: string[];
+    private _c: Array<string | Chapter>;
 
-    get chapters (): string [] {
+    get chapters (): Array<string | Chapter> {
         return this._c;
     }
 
-    set chapters (list: string[]) {
-        this._c = list;
-        const length = list.length;
-        this._l = Chapter.mock(this, this._c[length - 1], length);
-    }
-
-    /**
-     * 最新章节。
-     */
-    private _l: Chapter;
-
-    /**
-     * 获取最新章节。
-     */
-    get last (): Chapter {
-        return this._l;
-    }
-
-    /**
-     * 获取章节数量。
-     */
     get length (): number {
-        return this.chapters.length || (this._l ? this._l.index : 0);
+        return this._c
+            ? this._c.length
+            : 0;
     }
 
     /**
-     * 最后阅读章节。
+     * URL。
      */
-    private _r: Chapter;
+    private _u: string;
 
-    /**
-     * 获取最后阅读章节。
-     */
-    get read (): Chapter {
-        return this._r;
-    }
-
-    /**
-     * 设置最后阅读章节。
-     */
-    set read (chapter: Chapter) {
-        if ((this._r && this._r.index || 0) < chapter.index)
-            this._r = chapter;
-        this._t = + new Date();
-        this.bookshelf.save();
+    get url (): string {
+        this._u = this.bookshelf.url + this.title + '/';
+        return this._u;
     }
 
     /**
@@ -78,115 +57,136 @@ export default class Novel {
      */
     private _t: number;
 
-    /**
-     * 获取最后阅读时间。
-     */
     get time (): number {
         return this._t;
     }
 
-    constructor (bookshelf: Bookshelf, title: string, author: string) {
+    constructor (bookshelf: IBookshelf, title: string, chapters: boolean | string[] = false) {
         this.bookshelf = bookshelf;
         this.title = title;
-        this.author = author;
-        this._c = [];
+        this._a = '';
+        if (chapters instanceof Array) {
+            this._l = true;
+            this._c = chapters;
+        } else {
+            this._l = chapters;
+            this._c = [];
+            if (chapters)
+                this.load();
+        }
         this._t = 0;
     }
 
-    /**
-     * 指明对应 URL。
-     */
+    load (): Promise<Novel> {
+        if (true === this._l)
+            return Promise.resolve(this);
+        if (!(this._l instanceof Promise))
+            this._l = fetch(this.url).then((response) => {
+                let reason = '';
+                switch (response.status) {
+                    case 200:
+                        break;
+                    case 404:
+                        reason = '书籍不存在。';
+                        break;
+                    case 501:
+                        reason = '数据源已被移除。';
+                        break;
+                    case 504:
+                        reason = '源数据解析失败。';
+                        break;
+                    default:
+                        reason = '未知错误。';
+                        break;
+                }
+                if (reason)
+                    throw reason;
+                return response.text();
+            }).then((xml: string) => {
+                const doc = new DOMParser().parseFromString(xml, 'text/xml'),
+                    chapters = doc.evaluate('//Chapter', doc, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
+                for (let i = 0, j = chapters.snapshotLength; i < j; i++)
+                    if (!this._c[i])
+                        this._c[i] = chapters.snapshotItem(i).textContent;
+                this._a = doc.evaluate('//Author', doc, null, XPathResult.STRING_TYPE, null).stringValue;
+                this._l = true;
+                return this;
+            });
+        return this._l;
+    }
+
     as (url: string): Novel {
-        this.bookshelf.as(url.substr(0, url.length - this.title.length - 1));
+        this._u = url;
+        this.bookshelf.as(url.replace(/\/[^\/]+\/$/, '/'));
         return this;
     }
 
-    /**
-     * 用于保存书架时书籍状态。
-     */
-    expr (): [string, string, number, string, number, string, number] {
-        return [
-            this.title,
-            this.author,
-            this.length,
-            this._l ? this._l.title : '',
-            this._r ? this._r.index : 0,
-            this._r ? this._r.title : '',
-            this._t
-        ];
+    get (index: number, load: boolean = true): Chapter {
+        const chapter = this._c[index - 1];
+        if (chapter instanceof Chapter)
+            return chapter;
+        return this._c[index - 1] = new Chapter(this, chapter as string, index, load);
+    }
+
+    set (index: number, title: string, paragraphs: string[]): Chapter {
+        const chapter = new Chapter(this, title, index, paragraphs);
+        this._c[index - 1] = chapter;
+        return chapter;
     }
 
     /**
-     * 用于重建书架时填充数据。
+     * 读过的最后一个章节。
      */
-    static mock (bookshelf: Bookshelf, stats: [string, string, number, string, number, string, number]): Novel {
-        const novel = new Novel(bookshelf, stats[0], stats[1]);
-        if (stats[2])
-            novel._l = Chapter.mock(novel, stats[3], stats[2]);
-        if (stats[4])
-            novel._r = Chapter.mock(novel, stats[5], stats[4]);
-        novel._t = stats[6];
-        return novel;
+    private _r: Chapter;
+
+    get last (): Chapter {
+        return this._r;
     }
 
-    update (): Promise<Novel> {
-        if (this._c.length) return Promise.resolve(this);
-        return Novel.load(this.bookshelf.prefix + this.title).then((data) => {
-            this.chapters = data.children;
-            return this;
-        });
+    set last (chapter: Chapter) {
+        const last = this._r;
+        if (!last || last.index < chapter.index)
+            this._r = chapter;
+        this._t = Math.floor(+ new Date() / 1000);
+        this.bookshelf.save();
     }
 
-    /**
-     * 从服务端抓取指定章节。
-     */
-    fetch (index: number): Promise<Chapter> {
-        return Chapter.load(this.bookshelf.prefix + this.title + '/' + index).then(data => this.import(data));
+    import (meta: [string, number, number, number]): Novel {
+        const subs = meta[0].split('\r');
+        this._a = subs[0];
+        this._c = new Array(meta[1]);
+        this._c[meta[1] - 1] = new Chapter(this, subs[1], meta[1]);
+        if (meta[2])
+            this._r = new Chapter(this, subs[2], meta[2]);
+        this._t = meta[3];
+        return this;
     }
 
-    /**
-     * 导入章节。
-     */
-    import (data: {title: string, index: number, children: string[]}): Chapter {
-        return new Chapter(this, data.title, data.index, data.children);
-    }
-
-    /**
-     * 读取并解析服务端数据。
-     */
-    static load (url: string): Promise<{ title: string, author: string, children: string[] }> {
-        return fetch(url).then((response) => {
-            let reason = '';
-            switch (response.status) {
-                case 200:
-                    break;
-                case 404:
-                    reason = '书籍不存在。';
-                    break;
-                case 501:
-                    reason = '数据源已被移除。';
-                    break;
-                case 504:
-                    reason = '源数据解析失败。';
-                    break;
-                default:
-                    reason = '未知错误。';
-                    break;
-            }
-            if (reason)
-                throw new Error(reason);
-            return response.text();
-        }).then((xml: string) => {
-            const doc = new DOMParser().parseFromString(xml, 'text/xml'),
-                children = [],
-                chapters = doc.evaluate('//Chapter', doc, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-            for (let i = 0, j = chapters.snapshotLength; i < j; i++)
-                children.push(chapters.snapshotItem(i).textContent);
-            return {
-                title: doc.evaluate('//Title', doc, null, XPathResult.STRING_TYPE, null).stringValue,
-                author: doc.evaluate('//Author', doc, null, XPathResult.STRING_TYPE, null).stringValue,
-                children
-            };
-        });
+    export (): [string, string, number, number, number] {
+        const stats: [string, string, number, number, number] = [
+                this.title,
+                '',
+                0,
+                0,
+                this._t
+            ],
+            subs: [string, string, string] = [
+                this._a,
+                '',
+                ''
+            ];
+        if (this._c) {
+            stats[2] = this._c.length;
+            const last = this._c[stats[2] - 1];
+            subs[1] = last instanceof Chapter
+                ? last.title
+                : last as string;
+        }
+        if (this._r) {
+            stats[3] = this._r.index;
+            subs[2] = this._r.title;
+        }
+        stats[1] = subs.join('\r');
+        return stats;
     }
 }

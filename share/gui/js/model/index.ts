@@ -1,5 +1,3 @@
-import Bookshelf from './bookshelf';
-
-export {
-    Bookshelf
-};
+export * from './bookshelf';
+export * from './inovel';
+export * from './ichapter';
