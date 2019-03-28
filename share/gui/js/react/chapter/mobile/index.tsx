@@ -14,10 +14,14 @@ export default function (props: { model: Model.IChapter, page: number, dimesions
         [
             pages,
             setPages
-        ] = React.useState(null),
+        ] = React.useState([]),
         [
             index,
             setIndex
+        ] = React.useState(0),
+        [
+            percent,
+            setPercent
         ] = React.useState(0),
         viewport = React.useRef(),
         $prev = React.useCallback(() => {
@@ -26,6 +30,7 @@ export default function (props: { model: Model.IChapter, page: number, dimesions
             if (1 != index) {
                 setIndex(index - 1);
             } else if (1 < chapter.index) {
+                setPages([]);
                 props.onClick(chapter.novel.get(chapter.index - 1), -1);
             } else {
                 console.error('TODO: first chapter error');
@@ -37,6 +42,7 @@ export default function (props: { model: Model.IChapter, page: number, dimesions
             if (pages.length != index)
                 setIndex(index + 1);
             else if (chapter.index < chapter.novel.length) {
+                setPages([]);
                 props.onClick(chapter.novel.get(chapter.index + 1), 0);
             } else {
                 console.error('TODO: last chapter error');
@@ -126,18 +132,18 @@ export default function (props: { model: Model.IChapter, page: number, dimesions
             return paginate();
         (chapter.loaded as Promise<any>).then(() => paginate());
     }, [ chapter, dimesions ]);
-    React.useEffect(() => {
-        let index = 1;
-        if (0 > props.page)
-            index = pages.length + 1 + props.page;
-        setIndex(index);
-    }, [ pages ]);
+    React.useEffect(() =>
+        setIndex(pages[0] && 0 > props.page ? pages.length : 1),
+    [ pages ]);
+    React.useEffect(() =>
+        setPercent(Math.round(chapter.index * 1000 / chapter.novel.length) / 10),
+    [ chapter.novel.loaded, chapter ]);
 
     return (
         <>
             <div className="mobile" ref={ viewport }>
                 {
-                    pages ? (
+                    pages[0] ? (
                         <Page data={ pages[index - 1] } />
                     ) : (
                         <Loading />
@@ -147,8 +153,9 @@ export default function (props: { model: Model.IChapter, page: number, dimesions
             <Pad onPrev={ $prev }
                 onNext={ $next }
                 title={ chapter.novel.title }
-                index={ index }
-                length={ pages ? pages.length : 0 }
+                index={ pages[0] ? index : 0 }
+                length={ pages.length }
+                percent={ percent }
                 />
         </>
     );
