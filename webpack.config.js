@@ -1,6 +1,13 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"),
-    HtmlWebpackPlugin = require('html-webpack-plugin'),
-    CopyWebpackPlugin = require('copy-webpack-plugin');
+    isDev = process.env.NODE_ENV === 'development',
+    replace = {
+        loader: 'string-replace-loader',
+        options: {
+            search: '%REACT_PROFILE%',
+            replace: isDev ? 'development' : 'production.min',
+            flags: 'g'
+        }
+    };
 
 module.exports = {
     entry: __dirname + '/share/gui/app.ts',
@@ -42,24 +49,26 @@ module.exports = {
             },
             {
                 test: /\.html$/,
-                loader: 'html-loader'
+                use: [
+                    'file-loader?name=[name].[ext]',
+                    replace,
+                    'extract-loader',
+                    'html-loader'
+                ]
+            },
+            {
+                test: /\.xslt$/,
+                use: [
+                    'file-loader?name=[name].[ext]',
+                    replace
+                ]
             }
         ]
     },
     plugins: [
         new MiniCssExtractPlugin({
             filename: 'app.css'
-        }),
-        new HtmlWebpackPlugin({
-            template: 'share/gui/index.html',
-            inject: false
-        }),
-        new CopyWebpackPlugin([
-            {
-                from: '*.xslt',
-                context: 'share/gui/'
-            }
-        ])
+        })
     ],
     externals: {
         react: 'React',
