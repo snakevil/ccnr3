@@ -1,35 +1,41 @@
 import * as React from 'react';
 
-import { Bookshelf } from '../model';
-import * as view from './view';
+import * as Model from '../model';
 
+import Bookshelf from './bookshelf';
+import TOC from './toc';
+import Chapter from './chapter';
 
 export default function (props: { [prop: string]: any }) {
-    const bookshelf = Bookshelf.load(),
-        url = decodeURI(location.href),
-        raw = props.data,
+    const bookshelf = Model.Bookshelf.load(),
         [
-            target,
-            setTarget
-        ] = React.useState(raw ? (raw.index ? raw : bookshelf.import(raw).as(url)) : bookshelf.as(url)),
-        $go = React.useCallback((url, data) => {
-            history.replaceState(null, null, url);
-            setTarget(data);
+            model,
+            setModel
+        ] = React.useState((): Model.Bookshelf | Model.INovel | Model.IChapter => {
+            const data = props.data,
+                url = location.href;
+            if ('author' in data)
+                return bookshelf.set(data.title, data.author, data.children).as(url);
+            if ('index' in data)
+                return bookshelf.build(location.href, data.title, data.children);
+            return bookshelf.as(url);
+        }),
+        [
+            page,
+            setPage
+        ] = React.useState(0),
+        $chapter = React.useCallback((model: Model.Bookshelf | Model.INovel | Model.IChapter, page: number = 0) => {
+            setModel(model);
+            setPage(page);
         }, []);
+    React.useEffect(() => {
+        history.replaceState(null, null, model.url);
+    }, [ model ]);
 
-    try {
-        if ('author' in target) return (
-            <view.TOC data={ target } $go={ $go } />
-        );
-        if ('prefix' in target) return (
-            <view.Bookshelf data={ target } $go={ $go } />
-        );
-        return (
-            <view.Chapter data={ target } $go={ $go } />
-        );
-    } catch (error) {
-        return (
-            <view.Error>{ error }</view.Error>
-        );
-    }
+    return model instanceof Model.Bookshelf
+        ? <Bookshelf model={ model } onClick={ setModel } />
+        : ('author' in model
+            ? <TOC model={ model } onClick={ setModel } />
+            : <Chapter model={ model } page={ page } onClick={ $chapter } />
+        )
 }

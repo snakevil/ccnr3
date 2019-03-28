@@ -16,6 +16,6 @@ if (element) {
 }
 
 ReactDOM.render(
-    <CCNR3 data={ element ? data : null } />,
+    <CCNR3 data={ data } />,
     document.body.firstElementChild
 );

@@ -1,5 +1,5 @@
 .page-chapter {
-    .viewport {
+    .mobile {
         position: relative;
         width: 100%;
         height: 100%;
@@ -8,6 +8,7 @@
 
         .trie {
             position: absolute;
+            top: 0;
             width: 100%;
             left: -200%;
             padding: 1.4em 0;
@@ -31,7 +32,7 @@
             font-size: 1.25em;
             text-indent: 2em;
 
-            &.tail {
+            &.cont {
                 text-indent: 0;
             }
         }
