@@ -60,5 +60,9 @@ module.exports = {
                 context: 'share/gui/'
             }
         ])
-    ]
+    ],
+    externals: {
+        react: 'React',
+        'react-dom': 'ReactDOM'
+    }
 };
