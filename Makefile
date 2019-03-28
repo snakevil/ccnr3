@@ -1,6 +1,6 @@
-DESTDIR := var
-LUADIR := $(DESTDIR)/app
-DIST := dist-$(shell 'date' +'%y%m%d%H%I').tar.xz
+DESTDIR := var/build
+LUADIR := $(DESTDIR)
+DIST := ccnr3-$(shell 'date' +'%y%m%d%H%I').tar.xz
 MOONs := libexec/app.moon $(foreach dir, \
 	$(shell 'find' lib -type d), \
 	$(wildcard $(dir)/*.moon) \
@@ -22,7 +22,7 @@ clean:
 
 dist: $(DESTDIR)/$(DIST)
 $(DESTDIR)/$(DIST): $(LUAs) $(RESs)
-	tar -cf - -C $(DESTDIR) --exclude '.*' app gui | xz -9 > $@
+	cd $(DESTDIR) && tar -cf - --exclude '.*' * | xz -9 > $(DIST)
 
 lua: $(LUAs)
 $(LUAs): $(LUADIR)/%.lua: %.moon

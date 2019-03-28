@@ -1,6 +1,5 @@
 *
 !.gitignore
 
-!app/
+!build/
 !db/
-!gui/

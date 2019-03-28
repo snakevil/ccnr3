@@ -6,7 +6,7 @@ module.exports = {
     entry: __dirname + '/share/gui/app.ts',
     output: {
         filename: 'app.js',
-        path: __dirname + '/var/gui'
+        path: __dirname + '/var/build/share/gui'
     },
     resolve: {
         extensions: [

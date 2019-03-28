@@ -1,5 +1,5 @@
 do
-    prefix = ngx.var.document_root .. '/n/app'
+    prefix = ngx.var.document_root .. '/n'
     path = ';' .. package.path .. ';'
     if path\find ';%./%?%.lua;'
         extended = table.concat {
