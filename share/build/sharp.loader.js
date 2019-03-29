@@ -24,7 +24,7 @@ module.exports = function (content) {
         sharp(data).resize(size).toBuffer()
     ).then(data => {
         this.emitFile(target, data);
-        callback(null, '');
+        callback(null, 'module.exports=__webpack_public_path__+' + JSON.stringify(target));
     }).catch(err => callback(err));
 };
 module.exports.raw = true;
