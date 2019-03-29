@@ -35,6 +35,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "sass": "^1.17.3",
     "sass-loader": "^7.1.0",
+    "sharp": "^0.22.0",
     "source-map-loader": "^0.2.4",
     "string-replace-loader": "^2.1.1",
     "typescript": "^3.3.4000",
