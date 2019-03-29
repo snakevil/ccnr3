@@ -2,3 +2,4 @@
 !.gitignore
 
 !*.task.js
+!*.loader.js
