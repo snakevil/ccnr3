@@ -1,0 +1,17 @@
+{
+    "name": "CCNR/3",
+    "description": "Clean & Clear Novel Reader ver.3",
+    "display": "standalone",
+    "start_url": "/n/?pwa",
+    "lang": "zh-CN",
+    "scope": "/n/",
+    "icons": [{
+        "src": "ccnr3.png?size=192",
+        "size": "192x192",
+        "type": "image/png"
+    }, {
+        "src": "ccnr3.png?size=512",
+        "size": "512x512",
+        "type": "image/png"
+    }]
+}

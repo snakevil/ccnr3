@@ -3,5 +3,6 @@ import './css/index.scss';
 import './page.xslt';
 import './toc.xslt';
 import './chapter.xslt';
+import './manifest.webmanifest';
 
 import './js';
