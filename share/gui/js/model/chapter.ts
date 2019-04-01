@@ -2,7 +2,7 @@ import { INovel } from './inovel';
 import { IChapter } from './ichapter';
 
 export class Chapter implements IChapter {
-    readonly novel: INovel;
+    readonly parent: INovel;
 
     /**
      * 是否加载完成。
@@ -34,12 +34,13 @@ export class Chapter implements IChapter {
     private _u: string;
 
     get url (): string {
-        this._u = this.novel.url + this.index;
+        const parts = this.parent.url.match(/^(.*?)(|[\?#].*)$/);
+        this._u = parts[1] + this.index + parts[2];
         return this._u;
     }
 
     constructor (novel: INovel, title: string, index: number, content: boolean | string[] = false) {
-        this.novel = novel;
+        this.parent = novel;
         this.title = title;
         this.index = index;
         if (content instanceof Array) {
@@ -91,13 +92,13 @@ export class Chapter implements IChapter {
     }
 
     as (url: string): Chapter {
-        this._u = url;
-        this.novel.as(url.replace(/\/\d+$/, ''));
+        const parts = url.match(/^(.*\/)\d+(|[\?#].*)$/);
+        this.parent.as(parts[1] + parts[2]);
         return this;
     }
 
     read (): Chapter {
-        this.novel.last = this;
+        this.parent.last = this;
         return this;
     }
 

@@ -68,6 +68,7 @@ export class Bookshelf implements IBookshelf {
         if (!novel) {
             novel = new Novel(this, title, true);
             this._d.push(novel);
+            this.save();
         } else
             novel.load();
         return novel;
@@ -75,18 +76,19 @@ export class Bookshelf implements IBookshelf {
 
     set (title: string, author: string, chapters: string[]): Novel {
         const novel = new Novel(this, title, chapters),
-            old = this._d.findIndex((novel) => novel.title == title);
+            old = this._d.findIndex((novel) => novel.title == title),
+            size = chapters.length;
         if (-1 < old) {
-            novel.import(this._d[old].export().slice(1) as [string, number, number, number]);
-            this._d[old] = novel;
+            this._d[old] = novel.import(this._d[old].export().slice(1) as [string, number, number, number]);
         } else
-            this._d.push(novel);
+            this._d.push(novel.import([[author, chapters[size - 1], ''].join('\r'), size, 0, 0]));
+        this.save();
         return novel;
     }
 
     build (url: string, title: string, paragraphs: string[]): Chapter {
-        const matched = url.match(/^(.*\/)([^\/]+)\/(\d+)$/);
-        this._u = matched[1];
+        const matched = url.match(/^(.*\/)([^\/]+)\/(\d+)(|[\?#].*)$/);
+        this._u = matched[1] + matched[4];
         return this.get(decodeURI(matched[2])).set(+ matched[3], title, paragraphs);
     }
 }

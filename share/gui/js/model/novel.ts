@@ -3,7 +3,7 @@ import { INovel } from './inovel';
 import { Chapter } from './chapter';
 
 export class Novel implements INovel {
-    readonly bookshelf: IBookshelf;
+    readonly parent: IBookshelf;
 
     /**
      * 是否加载完成。
@@ -48,7 +48,8 @@ export class Novel implements INovel {
     private _u: string;
 
     get url (): string {
-        this._u = this.bookshelf.url + this.title + '/';
+        const parts = this.parent.url.match(/^(.*?)(|[\?#].*)$/);
+        this._u = parts[1] + this.title + '/' + parts[2];
         return this._u;
     }
 
@@ -62,7 +63,7 @@ export class Novel implements INovel {
     }
 
     constructor (bookshelf: IBookshelf, title: string, chapters: boolean | string[] = false) {
-        this.bookshelf = bookshelf;
+        this.parent = bookshelf;
         this.title = title;
         this._a = '';
         if (chapters instanceof Array) {
@@ -116,8 +117,8 @@ export class Novel implements INovel {
     }
 
     as (url: string): Novel {
-        this._u = url;
-        this.bookshelf.as(url.replace(/\/[^\/]+\/$/, '/'));
+        const parts = url.match(/^(.*\/)[^\/]+\/(|[\?#].*)$/);
+        this.parent.as(parts[1] + parts[2]);
         return this;
     }
 
@@ -148,13 +149,12 @@ export class Novel implements INovel {
         if (!last || last.index < chapter.index)
             this._r = chapter;
         this._t = Math.floor(+ new Date() / 1000);
-        this.bookshelf.save();
+        this.parent.save();
     }
 
     import (meta: [string, number, number, number]): Novel {
         const subs = meta[0].split('\r');
         this._a = subs[0];
-        this._c = new Array(meta[1]);
         this._c[meta[1] - 1] = new Chapter(this, subs[1], meta[1]);
         if (meta[2])
             this._r = new Chapter(this, subs[2], meta[2]);

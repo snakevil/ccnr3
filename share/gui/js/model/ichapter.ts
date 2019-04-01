@@ -7,7 +7,7 @@ export interface IChapter {
     /**
      * 所属书籍。
      */
-    readonly novel: INovel;
+    readonly parent: INovel;
 
     /**
      * 是否加载完成。

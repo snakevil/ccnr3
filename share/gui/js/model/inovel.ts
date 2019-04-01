@@ -8,7 +8,7 @@ export interface INovel {
     /**
      * 所属书架。
      */
-    readonly bookshelf: IBookshelf;
+    readonly parent: IBookshelf;
 
     /**
      * 是否加载完成。
