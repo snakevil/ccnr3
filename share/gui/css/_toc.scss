@@ -1,54 +1,32 @@
-.page-toc {
+.toc {
+    h2 {
+        font-size: 2em;
+        margin-top: 1em;
+        font-weight: normal;
+        color: $info-color;
+    }
+
     address {
-        font-size: .8em;
-        margin: 0 -1.25em;
-        padding: .625em 1.25em;
-        background: #eee;
-        color: #ccc;
+        font-style: normal;
+        font-size: .75em;
+        color: $info-color;
+        margin: .83em 0;
 
         &::after {
-            content: ' 著';
+            content: '著';
+            margin-left: .125em;
         }
     }
 
     li {
-        display: inline-block;
-        width: 100%;
-        box-sizing: border-box;
-        padding-right: 1em;
-        border-bottom: 1px solid #eee;
-
-        &:last-child {
-            border: 0;
-        }
+        border-top: .5px solid $border-color;
     }
 
     a {
+        padding: 1em 0;
         display: block;
-        padding: .8em 0;
-        width: 100%;
-        overflow: hidden;
         white-space: nowrap;
+        overflow: hidden;
         text-overflow: ellipsis;
-    }
-
-    @media screen and (min-width: 678px) {
-        li {
-            width: 50%;
-
-            &.dual {
-                border: 0;
-            }
-        }
-    }
-
-    @media screen and (min-width: 1024px) {
-        li {
-            width: 33.33%;
-
-            &.tri {
-                border: 0;
-            }
-        }
     }
 }

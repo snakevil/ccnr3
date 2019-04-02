@@ -1,4 +1,12 @@
+$text-color: #333;
+$info-color: #999;
+$tip-color: #ccc;
+$border-color: #eee;
+$shadow-color: rgba(0, 0, 0, .2);
+
 @import "common";
 @import "bookshelf";
 @import "toc";
 @import "chapter";
+
+@import 'pwa';

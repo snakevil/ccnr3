@@ -27,11 +27,11 @@
                 <link rel="manifest" href="/n/manifest.webmanifest" />
             </head>
             <body>
-                <div />
+                <div class="ccnr3" />
                 <xsl:copy-of select="$content" />
                 <script src="https://cdn.bootcss.com/react/16.8.4/umd/react.%REACT_PROFILE%.js"></script>
                 <script src="https://cdn.bootcss.com/react-dom/16.8.4/umd/react-dom.%REACT_PROFILE%.js"></script>
-                <script src="/n/app.js" />
+                <script src="/n/app.js" async="true" />
             </body>
         </html>
     </xsl:template>

@@ -8,7 +8,7 @@
         <xsl:call-template name="page.html">
             <xsl:with-param name="title" select="Title" />
             <xsl:with-param name="content">
-                <ol id="data" style="display:none" data-index="z">
+                <ol class="embed chapter" style="display: none">
                     <xsl:attribute name="data-title">
                         <xsl:value-of select="Title" />
                     </xsl:attribute>

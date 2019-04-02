@@ -1,50 +1,57 @@
-.page-bookshelf {
-    ol {
-        border-top: 1px solid #eee;
+.bookshelf {
+    h1 {
+        color: $tip-color;
+        font-weight: normal;
+        margin: 1em 0;
     }
 
     li {
-        padding: .8em 0;
-        border-bottom: 1px solid #eee;
-        line-height: 1.5;
-        cursor: pointer;
+        padding: 1em 0;
+        border-top: .5px solid $border-color;
     }
 
-    address, dl {
-        color: #999;
+    h2 {
+        font-size: 1.25em;
+        font-weight: normal;
+        margin-bottom: .4em;
+    }
+
+    address {
         display: inline;
+        font-style: normal;
+        color: $info-color;
     }
 
-    dt, dd {
+    dt, .none {
         display: none;
     }
 
-    dd.unread {
+    dl {
         display: inline;
+    }
+
+    .unread {
+        display: inline;
+        color: $info-color;
 
         &::before {
             content: '・';
         }
 
         &::after {
-            content: '章未读';
+            content: '章待读';
+            margin-left: .125em;
         }
     }
 
-    dt:nth-of-type(2) {
-        display: inline;
+    dd:last-child {
+        color: $info-color;
+        font-size: .8em;
+        margin-top: .625em;
 
         &::before {
-            content: '';
-            display: block;
-        }
-
-        &::after {
-            content: '：';
-        }
-
-        + dd {
-            display: inline;
+            content: '更新至';
+            margin-right: .125em;
         }
     }
 }
