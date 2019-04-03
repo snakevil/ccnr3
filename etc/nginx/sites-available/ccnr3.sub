@@ -1,3 +1,7 @@
+location /n/share/gui/ {
+    internal;
+}
+
 location /n/ {
     # /var/
     error_page 404 = @ccnr3;
@@ -21,6 +25,8 @@ location /n/ {
         text/javascript js;
         text/xml xml;
         text/xsl xslt;
+        application/manifest+json webmanifest;
+        image/png png;
     }
 
     gzip on;
