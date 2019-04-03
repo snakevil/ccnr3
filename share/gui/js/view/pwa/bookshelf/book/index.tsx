@@ -6,7 +6,7 @@ import * as Model from '../../../../model';
  * @param {Model.INovel} model 书籍实例
  * @param {(model: Model.IBookshelf | Model.INovel | Model.IChapter, animate?: boolean) => void} onClick 切换模型实例方法
  */
-export default function ({ model, onClick }: {
+export function Book ({ model, onClick }: {
     model: Model.INovel,
     onClick: (model: Model.IBookshelf | Model.INovel | Model.IChapter, animate?: boolean) => void
 }) {

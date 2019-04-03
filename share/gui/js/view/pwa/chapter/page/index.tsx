@@ -3,7 +3,7 @@ import * as React from 'react';
 /**
  * @param {Array<[number, string]>} data 分页数据
  */
-export default function ({ data }: {
+export function Page ({ data }: {
     data: Array<[number, string]>
 }) {
     return (

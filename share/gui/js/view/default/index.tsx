@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import * as Model from '../../model';
 
-export default function ({ model, onClick }: {
+export function Default ({ model, onClick }: {
     model: Model.IBookshelf | Model.INovel | Model.IChapter,
     onClick: (model: Model.IBookshelf | Model.INovel | Model.IChapter, animate?: boolean) => void
 }) {

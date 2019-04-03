@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import * as Model from './model';
-import CCNR3 from './view';
+import { CCNR3 } from './view';
 
 document.addEventListener('readystatechange', () => {
     if ('complete' != document.readyState)

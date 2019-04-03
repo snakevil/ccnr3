@@ -11,7 +11,7 @@ import * as Model from '../../../model';
  * @param {() => void} rcShowBookshelf 显示书架层回调
  * @param {() => void} rcHideBookshelf 隐藏书架层回调
  */
-export default function ({ model, size, animate, onClick, visible, rcShowBookshelf, rcHideBookshelf }: {
+export function TOC ({ model, size, animate, onClick, visible, rcShowBookshelf, rcHideBookshelf }: {
     model: Model.INovel,
     size: [number, number],
     animate: boolean,

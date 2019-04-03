@@ -3,14 +3,14 @@ import * as React from 'react';
 import * as Model from '../model';
 
 import usePwa from './pwa.hook';
-import PWA from './pwa';
-import Default from './default';
+import { PWA } from './pwa';
+import { Default } from './default';
 
 /**
  * @param {Model.IBookshelf | Model.INovel | Model.IChapter} model 当前模型实例
  * @param {number} page 仅用于 PWA 模式章节页分片传参
  */
-export default function ({ model, page }: {
+export function CCNR3 ({ model, page }: {
     model: Model.IBookshelf | Model.INovel | Model.IChapter,
     page: number
 }) {

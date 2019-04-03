@@ -2,9 +2,9 @@ import * as React from 'react';
 
 import * as Model from '../../model';
 
-import Bookshelf from './bookshelf';
-import TOC from './toc';
-import Chapter from './chapter';
+import { Bookshelf } from './bookshelf';
+import { TOC } from './toc';
+import { Chapter } from './chapter';
 
 
 /**
@@ -14,7 +14,7 @@ import Chapter from './chapter';
  * @param {boolean} animate 是否动画交互
  * @param {(model: Model.IBookshelf | Model.INovel | Model.IChapter, animate?: boolean) => void} onClick 切换模型实例方法
  */
-export default function ({ model, page, size, animate, onClick }: {
+export function PWA ({ model, page, size, animate, onClick }: {
     model: Model.IBookshelf | Model.INovel | Model.IChapter,
     page: number,
     size: [number, number],

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import useHHMM from './hhmm.hook';
 
-export default function ({ title, index, length, percent }: {
+export function HUD ({ title, index, length, percent }: {
     title: string,
     index: number,
     length: number,

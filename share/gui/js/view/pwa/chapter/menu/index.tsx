@@ -3,7 +3,7 @@ import * as React from 'react';
 /**
  * @param {(event: React.MouseEvent) => void} onTOC 切换至目录组件实例方法
  */
-export default function ({ onTOC }: {
+export function Menu ({ onTOC }: {
     onTOC: (event: React.MouseEvent) => void
 }) {
     return (

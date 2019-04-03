@@ -2,9 +2,9 @@ import * as React from 'react';
 
 import * as Model from '../../../model';
 
-import Page from './page';
-import HUD from './HUD';
-import Menu from './menu';
+import { Page } from './page';
+import { HUD } from './hud';
+import { Menu } from './menu';
 
 /**
  * @param {Model.IChapter} model 章节实例
@@ -15,7 +15,7 @@ import Menu from './menu';
  * @param {() => void} rcShowNovel 显示书籍层回调
  * @param {() => void} rcHideNovel 隐藏书籍层回调
  */
-export default function ({ model, page, size, animate, onClick, rcShowNovel, rcHideNovel }: {
+export function Chapter ({ model, page, size, animate, onClick, rcShowNovel, rcHideNovel }: {
     model: Model.IChapter,
     page: number,
     size: [number, number],
@@ -174,6 +174,10 @@ export default function ({ model, page, size, animate, onClick, rcShowNovel, rcH
             return paginate();
         (model.loaded as Promise<any>).then(() => paginate());
     }, [ model, size ]);
+    React.useEffect(() => {
+        // 更新书架阅读进度
+        model.read();
+    }, [ model ]);
     React.useEffect(() => {
         // 修正当前分页
         if (pages[0] && index > pages.length)
