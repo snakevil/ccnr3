@@ -108,10 +108,11 @@ export function TOC ({ model, size, animate, onClick, visible, rcShowBookshelf, 
 
     const length = model.length,
         dual = length % 2 || 2,
-        tri = length % 3 || 3;
+        tri = length % 3 || 3,
+        overflowY = left ? 'hidden' : 'auto';
 
     return (
-        <div ref={ toc } className={ 'toc' + (grabbing ? ' grabbing' : '') + (visible ? '' : ' hidden') } style={ { left } }>
+        <div ref={ toc } className={ 'toc' + (grabbing ? ' grabbing' : '') + (visible ? '' : ' hidden') } style={ { left, overflowY } }>
             <h2>{ model.title }</h2>
             <address>{ model.author }</address>
             <ol>
