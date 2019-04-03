@@ -13,8 +13,13 @@
 
     a {
         color: $btn-color;
-        margin: 0 -1em;
-        padding: 1em;
+    }
+
+    $hx-margin: 2em;
+
+    h1, h2 {
+        margin-top: ($hx-margin - 1) / 2;
+        margin-bottom: $hx-margin / 2;
     }
 
     .ccnr3 {
@@ -51,6 +56,11 @@
 
     .toc {
         z-index: 11;
+
+        a {
+            margin: 0 -1em;
+            padding: 1em;
+        }
     }
 
     .chapter {
@@ -101,8 +111,9 @@
     }
 
     h3 {
-        margin-top: .3em;
-        margin-bottom: 1em;
+        $top: ($hx-margin - 2 * (1.75 - 1) / 2 - $c-m-v) / 2;
+        margin-top: $top;
+        margin-bottom: 1.25 * 1.75 - 1.75 - $top;
     }
 
     .hud {
