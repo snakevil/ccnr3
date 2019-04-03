@@ -31,7 +31,7 @@ export function CCNR3 ({ model, page }: {
 
     React.useEffect(() => {
         // 变更模型实例时同步 URL
-        history.replaceState(null, null, target.url);
+        history.replaceState(null, null, target.url + location.hash);
         // 同步窗口标题
         document.title = (
                 'title' in target
