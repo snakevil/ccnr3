@@ -1,14 +1,17 @@
 import * as React from 'react';
 
 const size = () => {
+    let pwa: boolean = false,
+        size: [number, number];
     if ('?pwa' == location.search || /\b(Android|iP(hone|ad|od))\b/.test(navigator.userAgent)) {
-        const size: [number, number] = [
+        size = [
             window.innerWidth,
             window.innerHeight
         ];
-        if (size[0] < 1025 && size[0] < size[1])
-            return size;
+        pwa = size[0] < 1025 && size[0] < size[1];
     }
+    document.documentElement.className = pwa ? 'pwa' : '';
+    return size;
 };
 
 export default function () {

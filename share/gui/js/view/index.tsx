@@ -44,10 +44,6 @@ export function CCNR3 ({ model, page }: {
                     ) : '书架'
             ) + ' | CCNR/3';
     }, [ target ]);
-    React.useEffect(() => {
-        // 窗口变动时同步样式
-        document.documentElement.className = pwa ? 'pwa' : '';
-    }, [ pwa ]);
 
     return pwa ? (
         <PWA model={ target } page={ page } size={ pwa } animate={ animate } onClick={ $go } />
