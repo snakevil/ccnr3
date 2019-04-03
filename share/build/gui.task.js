@@ -73,6 +73,10 @@ const path = require('path'),
                 {
                     test: /\/ccnr3\.png$/,
                     loader: 'sharp.loader'
+                },
+                {
+                    test: /\.(eot|svg|ttf|woff)$/,
+                    loader: 'file-loader?name=[name].[ext]'
                 }
             ]
         },
