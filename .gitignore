@@ -7,6 +7,8 @@
 !sbin/
 !share/
 !var/
+!.eslintrc.json
+!.prettierrc.json
 !gulpfile.js
 !package.json
 !README.md

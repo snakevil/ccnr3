@@ -1,13 +1,13 @@
 {
     "compilerOptions": {
-        "outDir": "./var/gui/",
+        "outDir": "./var/build/share/gui/",
         "sourceMap": true,
         "noImplicitAny": true,
         "module": "commonjs",
         "lib": [
-            "ES2015",
-            "DOM",
-            "ScriptHost"
+            "es2015",
+            "dom",
+            "scripthost"
         ],
         "target": "es5",
         "jsx": "react"
