@@ -1,8 +1,8 @@
-import { INovel } from './inovel';
-import { IChapter } from './ichapter';
+import { INovel } from "./inovel";
+import { IChapter } from "./ichapter";
 
 export class Chapter implements IChapter {
-    readonly parent: INovel;
+    public readonly parent: INovel;
 
     /**
      * 是否加载完成。
@@ -11,20 +11,20 @@ export class Chapter implements IChapter {
      */
     private _l: boolean | Promise<Chapter>;
 
-    get loaded (): boolean | Promise<Chapter> {
+    public get loaded(): boolean | Promise<Chapter> {
         return this._l;
     }
 
-    readonly title: string;
+    public readonly title: string;
 
-    readonly index: number;
+    public readonly index: number;
 
     /**
      * 段落内容。
      */
     private _c: string[];
 
-    get content (): string[] {
+    public get content(): string[] {
         return this._c;
     }
 
@@ -33,13 +33,13 @@ export class Chapter implements IChapter {
      */
     private _u: string;
 
-    get url (): string {
+    public get url(): string {
         const parts = this.parent.url.match(/^(.*?)(|[\?#].*)$/);
         this._u = parts[1] + this.index + parts[2];
         return this._u;
     }
 
-    constructor (novel: INovel, title: string, index: number, content: boolean | string[] = false) {
+    public constructor(novel: INovel, title: string, index: number, content: boolean | string[] = false) {
         this.parent = novel;
         this.title = title;
         this.index = index;
@@ -49,58 +49,63 @@ export class Chapter implements IChapter {
         } else {
             // 默认不加载段落内容。
             this._l = content;
-            if (content)
-                this.load();
+            if (content) this.load();
         }
     }
 
-    load (): Promise<Chapter> {
-        if (this._c)
-            return Promise.resolve(this);
+    public load(): Promise<Chapter> {
+        if (this._c) return Promise.resolve(this);
         if (!(this._l instanceof Promise))
-            this._l = fetch(this.url).then((response) => {
-                let reason = '';
-                switch (response.status) {
-                    case 200:
-                        break;
-                    case 404:
-                        reason = '书籍不存在。';
-                        break;
-                    case 501:
-                        reason = '数据源已被移除。';
-                        break;
-                    case 504:
-                        reason = '源数据解析失败。';
-                        break;
-                    default:
-                        reason = '未知错误。';
-                        break;
-                }
-                if (reason)
-                    throw reason;
-                return response.text();
-            }).then((xml: string) => {
-                const doc = new DOMParser().parseFromString(xml, 'text/xml'),
-                    paragraphs = doc.evaluate('//Paragraph', doc, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-                this._c = [];
-                for (let i = 0, j = paragraphs.snapshotLength; i < j; i++)
-                    this._c.push(paragraphs.snapshotItem(i).textContent);
-                this._l = true;
-                return this;
-            });
+            this._l = fetch(this.url)
+                .then(response => {
+                    let reason = "";
+                    switch (response.status) {
+                        case 200:
+                            break;
+                        case 404:
+                            reason = "书籍不存在。";
+                            break;
+                        case 501:
+                            reason = "数据源已被移除。";
+                            break;
+                        case 504:
+                            reason = "源数据解析失败。";
+                            break;
+                        default:
+                            reason = "未知错误。";
+                            break;
+                    }
+                    if (reason) throw reason;
+                    return response.text();
+                })
+                .then((xml: string) => {
+                    const doc = new DOMParser().parseFromString(xml, "text/xml"),
+                        paragraphs = doc.evaluate(
+                            "//Paragraph",
+                            doc,
+                            null,
+                            XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+                            null
+                        );
+                    this._c = [];
+                    for (let i = 0, j = paragraphs.snapshotLength; i < j; i++)
+                        this._c.push(paragraphs.snapshotItem(i).textContent);
+                    this._l = true;
+                    return this;
+                });
         return this._l;
     }
 
-    as (url: string): Chapter {
+    public as(url: string): Chapter {
         const parts = url.match(/^(.*\/)\d+(|[\?#].*)$/);
         this.parent.as(parts[1] + parts[2]);
         return this;
     }
 
-    read (): Chapter {
+    public read(): Chapter {
         this.parent.last = this;
         return this;
     }
 
-    pages?: Array<[number, string]>[];
+    public pages?: [number, string][][];
 }

@@ -1,5 +1,5 @@
-import { IBookshelf } from './ibookshelf';
-import { IChapter } from './ichapter';
+import { IBookshelf } from "./ibookshelf";
+import { IChapter } from "./ichapter";
 
 /**
  * 书籍规范。
@@ -30,7 +30,7 @@ export interface INovel {
     /**
      * 章节列表。
      */
-    readonly chapters: Array<string | IChapter>;
+    readonly chapters: (string | IChapter)[];
 
     /**
      * 章节数量。
@@ -50,26 +50,26 @@ export interface INovel {
     /**
      * 调用远端接口以更新内容。
      */
-    load (): Promise<INovel>;
+    load(): Promise<INovel>;
 
     /**
      * 设置 URL。
      */
-    as (url: string): INovel;
+    as(url: string): INovel;
 
     /**
      * 获取指定序号的章节。
      *
      * 对于未载入的章节，其内容需要在调用服务端接口后才能访问。
      */
-    get (index: number, load?: boolean): IChapter;
+    get(index: number, load?: boolean): IChapter;
 
     /**
      * 设置章节。
      *
      * 用于在书籍章节页直接导入页面内嵌数据。
      */
-    set (index: number, title: string, paragraphs: string[]): IChapter;
+    set(index: number, title: string, paragraphs: string[]): IChapter;
 
     /**
      * 读过的最后一个章节。
@@ -89,7 +89,7 @@ export interface INovel {
      * - 读过的最后一个章节序号
      * - 最后阅读时间
      */
-    import (meta: [string, number, number, number]): INovel;
+    import(meta: [string, number, number, number]): INovel;
 
     /**
      * 导出追更信息。
@@ -105,5 +105,5 @@ export interface INovel {
      * - 读过的最后一个章节序号
      * - 最后阅读时间
      */
-    export (): [string, string, number, number, number];
+    export(): [string, string, number, number, number];
 }

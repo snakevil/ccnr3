@@ -1,4 +1,4 @@
-import { INovel } from './inovel';
+import { INovel } from "./inovel";
 
 /**
  * 章节规范。
@@ -39,20 +39,20 @@ export interface IChapter {
     /**
      * 调用远端接口以更新内容。
      */
-    load (): Promise<IChapter>;
+    load(): Promise<IChapter>;
 
     /**
      * 设置 URL。
      */
-    as (url: string): IChapter;
+    as(url: string): IChapter;
 
     /**
      * 标记已读。
      */
-    read (): IChapter;
+    read(): IChapter;
 
     /**
      * 分页列表。
      */
-    pages?: Array<[number, string]>[];
+    pages?: [number, string][][];
 }
