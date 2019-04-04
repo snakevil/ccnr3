@@ -1,10 +1,9 @@
-import * as React from 'react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import * as React from "react";
 
-import * as Model from '../../model';
+import * as Model from "../../model";
 
-export function Default ({ model, onClick }: {
-    model: Model.IBookshelf | Model.INovel | Model.IChapter,
-    onClick: (model: Model.IBookshelf | Model.INovel | Model.IChapter, animate?: boolean) => void
-}) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function Default({ model }: { model: Model.IBookshelf | Model.INovel | Model.IChapter }) {
     return <p>TODO Default</p>;
 }

@@ -1,113 +1,101 @@
-import * as React from 'react';
+import * as React from "react";
 
-import * as Model from '../../model';
+import * as Model from "../../model";
 
-import { Bookshelf } from './bookshelf';
-import { TOC } from './toc';
-import { Chapter } from './chapter';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Bookshelf } from "./bookshelf";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { TOC } from "./toc";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Chapter } from "./chapter";
 
+import useVisibility from "./visibility.hook";
 
 /**
+ *
  * @param {Model.IBookshelf | Model.INovel | Model.IChapter} model 当前模型实例
- * @param {number} page 仅用于章节页分片传参
- * @param {[number, number]} size 用于渲染交互匹配的屏幕尺寸
- * @param {boolean} animate 是否动画交互
- * @param {(model: Model.IBookshelf | Model.INovel | Model.IChapter, animate?: boolean) => void} onClick 切换模型实例方法
+ * @param {number} page 仅用于 PWA 模式章节页分片传参
+ * @param {[number, number]} size PWA 模式屏幕尺寸
  */
-export function PWA ({ model, page, size, animate, onClick }: {
-    model: Model.IBookshelf | Model.INovel | Model.IChapter,
-    page: number,
-    size: [number, number],
-    animate: boolean,
-    onClick: (model: Model.IBookshelf | Model.INovel | Model.IChapter, animate?: boolean) => void
+export function PWA({
+    model,
+    page,
+    size,
+}: {
+    model: Model.IBookshelf | Model.INovel | Model.IChapter;
+    page: number;
+    size: [number, number];
 }) {
-    const [
-            index,
-            setIndex
-        ] = React.useState(page), // 翻页状态记录
-        [
-            visBookshelf,
-            setVisBookshelf
-        ] = React.useState(-1), // 记录书架渲染预期
-        [
-            visNovel,
-            setVisNovel
-        ] = React.useState(-1), // 记录书籍渲染预期
-        $pagedGo = React.useCallback((model: Model.IBookshelf | Model.INovel | Model.IChapter, page: number = 1) => {
-            setIndex(page);
-            onClick(model);
-        }, [ onClick ]),
-        $showBookshelf = React.useCallback(() => {
-            // 显示书架层
-            if (1 != visBookshelf) {
-                setVisBookshelf(1);
-            }
-        }, [ visBookshelf ]),
-        $hideBookshelf = React.useCallback(() => {
-            // 隐藏书架层
-            if (0 != visBookshelf) {
-                setVisBookshelf(0);
-            }
-        }, [ visBookshelf ]),
-        $showNovel = React.useCallback(() => {
-            // 显示书籍层
-            if (1 != visNovel) {
-                setVisNovel(1);
-            }
-        }, [ visNovel ]),
-        $hideNovel = React.useCallback(() => {
-            // 隐藏书籍层
-            if (0 != visNovel) {
-                setVisNovel(0);
-            }
-        }, [ visNovel ]);
+    const [target, setTarget] = React.useState(model), // 状态化以内部更新
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        [index, setIndex] = React.useState(page), // 状态化以内部更新
+        [previous, setPrevious] = React.useState(null), // 上一模型实例
+        [animate, setAnimate] = React.useState(false), // 是否需要动画效果
+        [visBookshelf, showBookshelf, hideBookshelf] = useVisibility(), // 是否强制显示书架
+        [visNovel, showNovel, hideNovel] = useVisibility(), // 是否强制显示目录
+        $go = React.useCallback(
+            (model: Model.IBookshelf | Model.INovel | Model.IChapter, animate: boolean = false) => {
+                setPrevious(target);
+                setTarget(model);
+                setAnimate(animate);
+                hideBookshelf();
+                hideNovel();
+            },
+            [target, hideBookshelf, hideNovel]
+        );
+
     React.useEffect(() => {
-        // 模型实例变更时重算关系
-        setVisBookshelf(-1);
-        setVisNovel(-1);
-    }, [ model ]);
+        // 变更模型实例时同步 URL
+        history.replaceState(null, null, target.url + ("index" in target ? location.hash : ""));
 
-    let bookshelf: Model.IBookshelf,
-        novel: Model.INovel,
-        chapter: Model.IChapter;
-    if ('index' in model) {
-        chapter = model;
+        // 同步窗口标题
+        document.title =
+            ("title" in target ? ("index" in target ? target.parent.title + " " : "") + target.title : "书架") +
+            " | CCNR/3";
+    }, [target]);
+
+    let bookshelf: Model.IBookshelf, novel: Model.INovel, chapter: Model.IChapter;
+    if ("index" in target) {
+        chapter = target;
         novel = chapter.parent;
-    } else if ('author' in model)
-        novel = model;
-    bookshelf = novel ? novel.parent : model as Model.IBookshelf;
+    } else if ("author" in target) novel = target;
+    bookshelf = novel ? novel.parent : (target as Model.IBookshelf);
 
+    // | previous         | target           | animate | Bookshelf vis. | Novel anim. | Novel vis. | Chapter anim. |
+    // | Model.IBookshelf | Model.INovel     | true    | true           | true        | true       |               |
+    // | Model.IBookshelf | Model.IChapter   | true    | true           | false       | false      | true          |
+    // | Model.INovel     | Model.IBookshelf | false   | true           |             |            |               |
+    // | Model.INovel     | Model.IChapter   | true    | false          | false       | true       | true          |
+    // | Model.IChapter   | Model.IBookshelf | false   | true           |             |            |               |
+    // | Model.IChapter   | Model.INovel     | false   | false          | false       | true       |               |
     return (
-        <> {
-            chapter ? null : (
-                <Bookshelf model={ bookshelf }
-                    onClick={ onClick }
-                    visible={ -1 < visBookshelf ? !!visBookshelf : !novel || animate }
-                    />
-            )
-        } {
-            novel ? (
-                <TOC model={ novel }
-                    size={ size }
-                    animate={ animate }
-                    onClick={ onClick }
-                    visible={ -1 < visNovel ? !!visNovel : !chapter || animate }
-                    rcShowBookshelf={ $showBookshelf }
-                    rcHideBookshelf={ $hideBookshelf }
-                    />
-            ) : null
-        } {
-            chapter ? (
-                <Chapter model={ chapter }
-                    page={ index }
-                    size={ size }
-                    animate={ animate }
-                    onClick={ $pagedGo }
-                    rcShowNovel={ $showNovel }
-                    rcHideNovel={ $hideNovel }
-                    />
-            ) : null
-        }
+        <>
+            <Bookshelf
+                model={bookshelf}
+                visible={previous == bookshelf || target == bookshelf || visBookshelf}
+                onClick={$go}
+            />
+            {novel ? (
+                <TOC
+                    model={novel}
+                    size={size}
+                    animate={target == novel ? animate : false}
+                    visible={(target == novel ? true : previous == novel) || visNovel}
+                    fnShowBookshelf={showBookshelf}
+                    onClick={$go}
+                />
+            ) : null}
+            {chapter ? (
+                <Chapter
+                    model={chapter}
+                    page={index}
+                    size={size}
+                    animate={animate}
+                    fnShowBookshelf={showBookshelf}
+                    fnShowNovel={showNovel}
+                    onClick={$go}
+                />
+            ) : null}
         </>
     );
 }
