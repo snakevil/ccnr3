@@ -11,7 +11,6 @@ Requirements
 Install
 ----
 
-1. mkdir `app/db`
-2. chown www-data `app/db`
-3. chown root `app/etc/cron.d/ccnr3-update-toc`
-4. ln -s `app/etc/cron.d/ccnr3-update-toc` /etc/cron.d/
+1. chown www-data `var/db`
+2. chown root `etc/cron.d/ccnr3-update-toc`
+3. ln -s `etc/cron.d/ccnr3-update-toc` /etc/cron.d/
