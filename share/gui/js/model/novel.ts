@@ -62,11 +62,11 @@ export class Novel implements INovel {
 
     public constructor(bookshelf: IBookshelf, title: string, chapters: boolean | string[] = false) {
         this.parent = bookshelf;
-        this.title = title;
+        this.title = title.replace(/&nbsp;/g, " ");
         this._a = "";
         if (chapters instanceof Array) {
             this._l = true;
-            this._c = chapters;
+            this._c = chapters.map(title => title.replace(/&nbsp;/g, " "));
         } else {
             this._l = chapters;
             this._c = [];
@@ -104,7 +104,7 @@ export class Novel implements INovel {
                     const doc = new DOMParser().parseFromString(xml, "text/xml"),
                         chapters = doc.evaluate("//Chapter", doc, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
                     for (let i = 0, j = chapters.snapshotLength; i < j; i++)
-                        if (!this._c[i]) this._c[i] = chapters.snapshotItem(i).textContent;
+                        if (!this._c[i]) this._c[i] = chapters.snapshotItem(i).textContent.replace(/&nbsp;/g, " ");
                     this._a = doc.evaluate("//Author", doc, null, XPathResult.STRING_TYPE, null).stringValue;
                     this._l = true;
                     return this;

@@ -41,11 +41,11 @@ export class Chapter implements IChapter {
 
     public constructor(novel: INovel, title: string, index: number, content: boolean | string[] = false) {
         this.parent = novel;
-        this.title = title;
+        this.title = title.replace(/&nbsp;/g, " ");
         this.index = index;
         if (content instanceof Array) {
             this._l = true;
-            this._c = content;
+            this._c = content.map(paragraph => paragraph.replace(/&nbsp;/g, " "));
         } else {
             // 默认不加载段落内容。
             this._l = content;
@@ -89,7 +89,7 @@ export class Chapter implements IChapter {
                         );
                     this._c = [];
                     for (let i = 0, j = paragraphs.snapshotLength; i < j; i++)
-                        this._c.push(paragraphs.snapshotItem(i).textContent);
+                        this._c.push(paragraphs.snapshotItem(i).textContent.replace(/&nbsp;/g, " "));
                     this._l = true;
                     return this;
                 });
