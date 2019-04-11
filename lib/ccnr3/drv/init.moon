@@ -12,8 +12,10 @@ _fetch = (url) ->
     return if err
     resp.body
 
-_trim = (str) ->
+_format = (str) ->
     str = ngx.re.gsub str, '^\\s*(\\S.*?)\\s*$', '$1'
+    str = ngx.re.gsub str, ' ', '&nbsp;'
+    str = ngx.re.gsub str, '\\p{C}', '', 'u'
     str
 
 _table2xml = (data) ->
@@ -32,6 +34,11 @@ class Builder
 
     toc: =>
         data = @_.toc _fetch @url
+        file, e = io.open '/tmp/toc.json', 'w+'
+        return nil, e if not file
+        with file
+            \write require'cjson'.encode data
+            \close!
         return if not data
         (
             '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' ..
@@ -41,16 +48,16 @@ class Builder
                 '': {
                     {
                         '/': 'Title',
-                        '': _trim data.title
+                        '': _format data.title
                     }, {
                         '/': 'Author',
-                        '': _trim data.author
+                        '': _format data.author
                     }, {
                         '/': 'Chapters',
                         '': [{
                             '/': 'Chapter',
-                            ref: _trim i[1],
-                            '': _trim i[2]
+                            ref: _format i[1],
+                            '': _format i[2]
                         } for i in *data.chapters]
                     }
                 }
@@ -70,13 +77,13 @@ class Builder
                 '': {
                     {
                         '/': 'Title',
-                        '': _trim data.title
+                        '': _format data.title
                     }, {
                         '/': 'Paragraphs',
                         '': [{
                             '/': 'Paragraph',
-                            '': _trim i
-                        } for i in *data.paragraphs when 0 < #(_trim i)]
+                            '': _format i
+                        } for i in *data.paragraphs when 0 < #(_format i)]
                     }
                 }
             }
