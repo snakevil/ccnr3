@@ -36,6 +36,7 @@ export function Chapter({
     fnShowNovel: () => void;
     onClick: (model: Model.IBookshelf | Model.INovel | Model.IChapter, animate?: boolean) => void;
 }) {
+    const loaded = model.parent.loaded;
     const chapter = React.useRef(), // 绑定主元素
         [pages, setPages] = React.useState(model.pages || []), // 记录分页数据
         [index, setIndex] = React.useState(page || 1), // 记录当前分页
@@ -43,6 +44,10 @@ export function Chapter({
         [animated, setAnimated] = React.useState(!animate), // 记录是否已动画
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         [menu, showMenu, hideMenu] = useVisibility(), // 记录菜单状态
+        percent = React.useMemo(() => {
+            if (true !== loaded) return 0;
+            return Math.round((model.index * 1000) / model.parent.length) / 10;
+        }, [model, loaded]),
         $previous = React.useCallback(() => {
             if (!pages[0]) return;
             if (2 > index) {
@@ -157,6 +162,8 @@ export function Chapter({
                 setPages(pages);
             };
         if (true === model.loaded) return paginate();
+        // 修正从次新章节翻阅至最新章节时，最新章节以通过 `loaded = false` 方式构建而黑屏的问题
+        if (!model.loaded) model.load();
         (model.loaded as Promise<Model.IChapter>).then(() => paginate());
     }, [model, size]);
 
@@ -183,17 +190,15 @@ export function Chapter({
         }
     }, [animated]);
 
-    const novel = model.parent;
-
     return (
         <div ref={chapter} className="chapter" style={{ left }}>
             <Page data={pages[index - 1]} />
             <HUD
                 size={size}
-                title={novel.title}
+                title={model.parent.title}
                 index={index}
                 length={pages[0] ? pages.length : 0}
-                percent={Math.round((model.index * 1000) / novel.length) / 10}
+                percent={percent}
                 onMenu={showMenu}
                 onPrevious={$previous}
                 onNext={$next}
